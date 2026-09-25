@@ -1,0 +1,222 @@
+import { Aside, Steps } from '@astrojs/starlight/components';
+import DocLink from '@components/DocLink.astro';
+import ImageGallery from '@components/ImageGallery.astro';
+import InstallationCardGrid from '@components/InstallationCardGrid.astro';
+import { Products } from '@models/site.models';
+
+Four steps take you from a sensor on a machine to the first verdict in Trendz. The first two happen in
+ThingsBoard, the last two in Trendz.
+
+## Step 1: Install the hardware
+
+Vibration analysis needs the raw signal. Many industrial vibration sensors report only a summary value like RMS
+or temperature, and those cannot be analyzed for frequencies. The hardware you choose has to record a burst of
+acceleration readings and deliver the whole burst to ThingsBoard. How you get there is up to you:
+
+- **Commercial sensors:** Wireless or wired industrial accelerometers with a gateway that forwards the bursts.
+  Wired sensors and gateways reach ThingsBoard through the
+  <DocLink product={Products.CE} path='iot-gateway/getting-started'>IoT Gateway</DocLink>.
+- **Your own setup:** A single-board computer like a Raspberry Pi with an accelerometer board, sampling the
+  sensor and publishing the bursts over MQTT or HTTP.
+
+{/* TODO: sensor selection guidance is missing here: which sensors to pick, where to get them, and links to
+    the IoT Hub guides once they exist. */}
+
+<Steps>
+
+1. Mount the sensor on the bearing housing of the machine, as close to the bearing as possible, one per bearing
+   position you want to monitor. A triaxial sensor covers the axial and horizontal directions in the same unit.
+
+2. Connect it to ThingsBoard. Create one
+   <DocLink product={Products.CE} path='user-guide/device-profiles'>device profile</DocLink> per machine family and
+   one device per machine, or save the samples as telemetry of the existing device or asset that represents the
+   machine the sensor is installed on.
+
+3. Configure regular sample saving. Record a burst at a fixed interval, with the same sample rate and burst
+   length every time, and send the whole burst as one telemetry value. Trendz compares samples over time, so
+   consistency matters more than frequency.
+
+</Steps>
+
+If you need help with a sensor or gateway setup, <a href="/contact-us/">contact us</a>.
+
+{/* Screenshot: a vibration sensor mounted on a motor bearing housing. */}
+
+## Step 2: Save data in the Trendz format
+
+Trendz reads each burst as one **sample**: a single string telemetry value that holds all points of the burst,
+saved under the timestamp of the capture.
+
+- Points are separated by spaces.
+- On a multi-axis sensor, a comma separates the axes.
+- Every axis holds the same number of points.
+
+```plaintext title="one sample from a single-axis sensor"
+0.012 -0.034 0.051 0.007 -0.019 0.023 0.041 -0.008 …
+```
+
+```plaintext title="one sample from a triaxial sensor: three blocks of equal length"
+0.12 -0.03 0.45 0.11 …, 0.02 -0.07 0.30 0.01 …, 0.20 0.04 -0.12 0.09 …
+```
+
+If the sensor or gateway sends the burst in another shape, as a JSON array, a base64 buffer, or one point per
+message, convert it in the device's <DocLink product={Products.CE} path='user-guide/rule-engine'>rule chain</DocLink>
+before it is saved: decode the payload, join the points with spaces, and separate the axes with commas.
+
+Two device attributes make the model useful from the first scan:
+
+- **Sample rate:** The number of points the sensor records per second. Store it as a numeric attribute when it
+  differs between devices, or enter it once in the model in Step 3.
+- **Shaft speed:** The rotation speed in RPM, as a numeric attribute or, for machines that change speed, as a
+  telemetry key. Without it Trendz tracks levels but cannot name faults. You can add it later.
+
+Once the first samples are stored, Trendz picks the key up through
+<DocLink product={props.product} path='topology-discovery'>topology discovery</DocLink> as a STRING telemetry
+field of the profile. The full data contract, including size limits and verification steps, is in
+<DocLink product={props.product} path='vibration/basics#what-a-sample-is'>Introduction to vibration analysis</DocLink>.
+
+## Step 3: Create a vibration model
+
+A vibration model reads one telemetry key from all machines of one profile. The wizard has four steps; the first
+two are enough to start, and the readiness panel beside them says whether the data supports the model before you
+create it.
+
+<Steps>
+
+1. In the Trendz left menu, click **Vibration Models**, then **Create model**.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-create-btn.webp',
+       alt: 'Vibration Models list with the Create model button highlighted in the page header',
+       caption: 'Create model opens the wizard.',
+     },
+   ]} />
+
+2. In **Scope**, pick the **Entity type** and the profile whose machines you want to read, and leave
+   **Items to analyze** on **All items** so machines added to the profile later are covered too.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-wizard-scope.webp',
+       alt: 'Scope step of the wizard with the entity type and profile selects highlighted and the items to analyze set to all items',
+       caption: 'One model covers one profile: its machines are the items it analyzes.',
+     },
+   ]} />
+
+3. Still in **Scope**, choose the **Signal unit** the sensor writes and the **Telemetry key** that holds the
+   samples. Trendz reads one sample to find the axes; rename them if the sensor is triaxial.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-wizard-telemetry.webp',
+       alt: 'Scope step with the signal unit and telemetry key selects highlighted, set to g and the vibration key',
+       caption: 'The signal: the unit it is recorded in, and the key it is stored under.',
+     },
+   ]} />
+
+4. Check the **Data readiness** panel on the right. It counts the items, the samples, the axes, and the points
+   per sample it found, and reads **Ready** when the model can be built from them.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-wizard-readiness.webp',
+       alt: 'Data readiness panel of the wizard reading Ready, with the items, telemetry key, axes, telemetry points, and points per sample it found',
+       caption: 'Data readiness answers the question before the scan does: is there anything to analyze?',
+     },
+   ]} />
+
+5. In **Scan settings**, enter **Points per second** or pick the attribute that holds it, then choose how far
+   back the first scan reads.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-wizard-scan.webp',
+       alt: 'Scan settings step with points per second set manually and the scan period chips highlighted',
+       caption: 'Points per second turns samples into frequencies; the scan period decides how much history the first scan reads.',
+     },
+   ]} />
+
+6. Skip **Machine details** and **Bearings**. Both are optional, both can be added at any time under
+   <DocLink product={props.product} path='vibration/interface/properties-tab'>Properties</DocLink>, and what
+   each of them unlocks is described there.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-wizard-machine.webp',
+       alt: 'Machine details step of the wizard with the ISO class and shaft speed fields highlighted, both optional',
+       caption: 'Machine details: an ISO class grades severity, a shaft speed names the frequencies. Both can wait.',
+     },
+   ]} />
+
+7. Click **Create model** on the last step. The model page opens while the first scan reads the stored samples.
+
+   <ImageGallery images={[
+     {
+       src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearings.webp',
+       alt: 'Bearings step of the wizard with the Create model button highlighted',
+       caption: 'The last step creates the model and starts its first scan.',
+     },
+   ]} />
+
+</Steps>
+
+<Aside type="tip">
+  Start with a short scan period on a few machines to confirm that the samples decode. Extend the history later
+  with **Scan more data**. A rebuild after a wrong signal unit or sample rate discards everything scanned.
+</Aside>
+
+## Step 4: See the results
+
+The **Overview** tab fills in machine by machine as the scan proceeds.
+
+<Steps>
+
+1. Select a machine in the table at the bottom. Machines still being processed show **Computing**.
+
+2. Read the three verdicts in the top-left card: **ISO** severity zone, **Shaft problem**, and **Bearing defect**.
+   Verdicts that need a shaft speed, an ISO class, or a bearing show a setup button instead, like
+   **Specify speed**. Click it to add the missing detail without leaving the page.
+
+3. Switch between **Vibration level**, **Shaft faults**, and **Bearing faults** to see the trend behind each
+   verdict, plotted against the machine's own normal.
+
+</Steps>
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/getting-started-results.webp',
+    alt: 'Overview tab with one machine selected, its three verdicts highlighted on the left and the view switch above the chart',
+    caption: 'The first results: three verdicts for the selected machine, and the view switch that shows the evidence.',
+  },
+]} />
+
+Trends need history. The first scan gives every machine a starting point; verdicts become reliable once a
+machine has a few dozen samples behind it. From here, three pages cover everything else:
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'vibration/interface/workspace',
+    title: 'Workspace',
+    description: 'How the interface fits together: the models list, the model page and its tabs, scans, and tasks.',
+    icon: '/src/assets/images/trendz/vibration/icon-gauge.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'vibration/interface/analyzer-tab',
+    title: 'Analyzer Tab',
+    description: 'Open any sample and inspect its waveform, spectrum, and envelope spectrum with fault frequencies marked.',
+    icon: '/src/assets/images/trendz/vibration/icon-spectrum.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'vibration/monitoring',
+    title: 'Monitoring & Alarms',
+    description: 'Scan on a schedule, define alarm rules, and raise ThingsBoard alarms when a machine changes.',
+    icon: '/src/assets/images/trendz/vibration/icon-alarm.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />

@@ -10,6 +10,12 @@ interface Props {
 }
 
 const { platform, filterFamily } = Astro.props;
+
+// Trendz syncs widgets with ThingsBoard itself from 1.15 on
+const usesSync = (family: string) => {
+	const [major, minor] = family.split('.').map(Number);
+	return major > 1 || (major === 1 && minor >= 15);
+};
 const versions = getTrendzUpgradeStepVersions(filterFamily);
 
 const pkgExt = platform === 'ubuntu' ? 'deb' : 'rpm';
@@ -297,7 +303,7 @@ const java17Link =
 					<h3>Upload widget bundle to ThingsBoard</h3>
 					<p>After the upgrade, upload the latest Trendz widget bundle and JS module to ThingsBoard. See the <a href="/docs/trendz/post-installation-steps/#trendz-widget-bundle-and-js-module">post-installation steps</a> for details.</p>
 				</>
-			) : v.family === '1.15' ? (
+			) : usesSync(v.family) ? (
 				<>
 					<h3>Sync Trendz with ThingsBoard</h3>
 					<p>After the upgrade, sync Trendz with ThingsBoard to update widgets and JS modules automatically. See <a href={syncLink}>the sync instructions</a> for details.</p>

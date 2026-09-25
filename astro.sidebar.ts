@@ -5,333 +5,347 @@ type SidebarConfig = NonNullable<StarlightUserConfig['sidebar']>;
 const guideItems = (prefix: string, { isPE = false } = {}) => {
 	const rp = prefix.replace('/user-guide', '/recipes');
 	return [
-	{
-		label: 'Digital Twins',
-		collapsed: true,
-		items: [
-			`${prefix}/digital-twins/entities`,
-			`${prefix}/digital-twins/relations`,
-			`${prefix}/digital-twins/attributes`,
-			`${prefix}/digital-twins/time-series-data`,
-		],
-	},
-	{
-		label: 'Devices & Assets',
-		collapsed: true,
-		items: [
-			`${prefix}/devices`,
-			`${prefix}/device-profiles`,
-			`${prefix}/connectivity-guide`,
-			`${prefix}/assets`,
-			`${prefix}/asset-profiles`,
-			`${prefix}/connectivity-status`,
-			`${prefix}/claiming`,
-			`${prefix}/provisioning`,
-			`${prefix}/ota-updates`,
-			`${prefix}/command-and-control`,
-		],
-	},
-	{
-		label: 'Data Visualization',
-		collapsed: true,
-		items: [
-			{ label: 'Key concepts', slug: `${prefix}/data-visualization` },
-			`${prefix}/dashboards`,
-			`${prefix}/widgets`,
-			`${prefix}/time-window`,
-			`${prefix}/aliases`,
-			`${prefix}/filters`,
-			`${prefix}/layouts`,
-			`${prefix}/actions`,
-			`${prefix}/scada`,
-			`${prefix}/units`,
-			`${prefix}/advanced-data-key-configuration`,
-			{ label: 'Solution Templates', slug: `${rp}/solution-templates/overview` },
-			...(isPE ? [{
-				label: 'Walkthroughs',
-				collapsed: true,
-				items: [`${prefix}/advanced-guides-for-working-with-dashboard`],
-			}] : []),
-		],
-	},
-	{
-		label: 'Customers & Users',
-		collapsed: true,
-		items: [
-			`${prefix}/multi-tenancy`,
-			`${prefix}/customers`,
-			`${prefix}/users`,
-			`${prefix}/roles`,
-			...(isPE ? [`${prefix}/groups`] : []),
-			`${prefix}/tenant-profiles`,
-		],
-	},
-	{
-		label: 'Alarms & Notifications',
-		collapsed: true,
-		items: [
-			`${prefix}/alarms`,
-			`${prefix}/alarm-rules`,
-			`${prefix}/notifications`,
-			{
-				label: 'Recipes',
-				collapsed: true,
-				items: [
-					`${rp}/alarm-rule-tutorials`,
-					`${rp}/create-clear-alarms`,
-					`${rp}/device-inactivity-alarm`,
-					`${rp}/enrich-alarms-with-details`,
-					`${rp}/send-email-alarm`,
-					`${rp}/send-sms-alarm`,
-					`${rp}/send-slack-alarm`,
-					`${rp}/send-mobile-app-alarm`,
-					`${rp}/send-microsoft-teams-alarm`,
-					`${rp}/send-alarm-email-to-customer`,
-					`${rp}/telegram-alarm-notification`,
-				],
-			},
-		],
-	},
-	{
-		label: 'Data Processing',
-		collapsed: true,
-		items: [
-			{
-				label: 'Calculated Fields',
-				collapsed: true,
-				items: [
-					{ label: 'Overview', slug: `${prefix}/calculated-fields` },
-					{ label: 'Simple', slug: `${prefix}/calculated-fields/simple` },
-					{ label: 'Script', slug: `${prefix}/calculated-fields/script` },
-					{ label: 'Propagation', slug: `${prefix}/calculated-fields/propagation` },
-					{ label: 'Geofencing', slug: `${prefix}/calculated-fields/geofencing` },
-					{
-						label: 'Related Entities Aggregation',
-						slug: `${prefix}/calculated-fields/related-entities-aggregation`,
-					},
-					{
-						label: 'Time Series Aggregation',
-						slug: `${prefix}/calculated-fields/time-series-data-aggregation`,
-					},
-					{
-						label: 'Examples',
-						collapsed: true,
-						items: [
-							`${rp}/aggregate-related-entities`,
-							`${rp}/average-temperature-related-devices`,
-							`${rp}/water-consumption-hourly-delta`,
-							`${rp}/telemetry-delta-two-devices`,
-							`${rp}/telemetry-delta-calculation`,
-						],
-					},
-				],
-			},
-			{
-				label: 'Rule Engine',
-				collapsed: true,
-				items: [
-					{ label: 'Overview', slug: `${prefix}/rule-engine` },
-					{ label: 'Queues', slug: `${prefix}/rule-engine/queues` },
-					{ label: 'Monitoring', slug: `${prefix}/rule-engine/monitoring` },
-					{
-						label: 'Recipes',
-						collapsed: true,
-						items: [
-							`${rp}/python-telemetry`,
-							`${rp}/trigger-related-entities-via-relation`,
-							`${rp}/rpc-reply-with-related-telemetry`,
-							`${rp}/send-rpc-to-related-device`,
-							`${rp}/fetch-weather-data`,
-							`${rp}/validate-incoming-telemetry`,
-							`${rp}/websocket-live-telemetry`,
-							...(isPE ? [`${rp}/add-devices-to-group`] : []),
-						],
-					},
-				],
-			},
-			`${prefix}/rule-nodes`,
-			{
-				label: 'Storage & Retention',
-				collapsed: true,
-				items: [`${rp}/configure-telemetry-ttl`],
-			},
-		],
-	},
-	{
-		label: 'Reporting',
-		collapsed: true,
-		items: [
-			`${prefix}/reporting/getting-started`,
-			`${prefix}/reporting/report-templates`,
-			`${prefix}/reporting/subreports`,
-			`${prefix}/reporting/scheduling`,
-			`${prefix}/reporting/notifications`,
-			`${prefix}/reporting/charts`,
-			`${prefix}/reporting/dashboards`,
-			...(isPE ? [{
-				label: 'Recipes',
-				collapsed: true,
-				items: [
-					`${rp}/reporting-embed-dashboard`,
-					`${rp}/reporting-line-chart-temperature`,
-					`${rp}/reporting-subreport-daily-alarms`,
-					`${rp}/reporting-alarm-notification`,
-				],
-			}] : []),
-		],
-	},
-	{
-		label: 'Integrations',
-		collapsed: true,
-		items: [
-			`${prefix}/integrations`,
-			`${prefix}/integrations/integration-types`,
-			`${prefix}/integrations/uplink-data-converter`,
-			`${prefix}/integrations/downlink-data-converter`,
-			`${prefix}/integrations/remote`,
-			{
-				label: 'Recipes',
-				collapsed: true,
-				items: [
-					`${rp}/mqtt-one-way-rpc`,
-					`${rp}/mqtt-two-way-rpc`,
-					`${rp}/opc-ua-airconditioner-monitoring`,
-				],
-			},
-		],
-	},
-	{
-		label: 'White-labeling',
-		collapsed: true,
-		items: [
-			{ label: 'General', slug: `${prefix}/white-labeling` },
-			{ label: 'Login', slug: `${prefix}/white-labeling-login` },
-			{ label: 'Mail Templates', slug: `${prefix}/white-labeling-mail` },
-			{ label: 'Custom Translation', slug: `${prefix}/white-labeling-translation` },
-			{ label: 'Custom Menu', slug: `${prefix}/white-labeling-menu` },
-			...(isPE ? [{
-				label: 'Recipes',
-				collapsed: true,
-				items: [
-					`${rp}/white-labeling-translate-dashboard`,
-					`${rp}/white-labeling-html-value-card`,
-					`${rp}/white-labeling-post-processing`,
-				],
-			}] : []),
-		],
-	},
-	{
-		label: 'Mobile App Center',
-		collapsed: true,
-		items: [
-			{ label: 'Overview', slug: `${prefix}/mobile-app-center` },
-			{ label: 'Applications', slug: `${prefix}/mobile-app-center/applications` },
-			{ label: 'QR Code Widget', slug: `${prefix}/mobile-app-center/qr-code-widget` },
-		],
-	},
-	{
-		label: 'Other Features',
-		collapsed: true,
-		items: [
-			`${prefix}/image-gallery`,
-			`${prefix}/version-control`,
-			`${prefix}/entity-views`,
-			`${prefix}/scheduler`,
-			`${prefix}/csv-xls-data-export`,
-			...(isPE ? [`${prefix}/file-storage`] : []),
-		],
-	},
-	{
-		label: 'Add-ons',
-		collapsed: true,
-		items: [`${prefix}/add-ons`, `${prefix}/edge-computing`, `${prefix}/trendz-analytics`],
-	},
-	{
-		label: 'Security',
-		collapsed: true,
-		items: [
-			{ label: 'Overview', slug: `${prefix}/security/overview` },
-			{
-				label: 'Authentication',
-				collapsed: true,
-				items: [
-					`${prefix}/security/two-factor-authentication`,
-					`${prefix}/security/oauth-2-support`,
-					`${prefix}/security/self-registration`,
-					`${prefix}/security/api-keys`,
-				],
-			},
-			{
-				label: 'Infrastructure',
-				collapsed: true,
-				items: [`${prefix}/security/domains`, `${prefix}/security/self-signed-ecc`],
-			},
-			{
-				label: 'Administration',
-				collapsed: true,
-				items: [
-					{ label: 'Security Settings', slug: `${prefix}/security` },
-					`${prefix}/security/audit-log`,
-					`${prefix}/security/secrets-storage`,
-				],
-			},
-			...(isPE ? [{
-				label: 'Recipes',
-				collapsed: true,
-				items: [
-					`${rp}/rbac-read-only-analyst`,
-					`${rp}/rbac-customer-scoped-access`,
-					`${rp}/rbac-generic-role-scope`,
-					`${rp}/rbac-isolated-device-groups`,
-					`${rp}/rbac-smart-buildings`,
-				],
-			}] : []),
-		],
-	},
-	{
-		label: 'Contribution',
-		collapsed: true,
-		items: [
-			...(!isPE ? [
-				`${prefix}/contribution/how-to-contribute`,
-				`${prefix}/contribution/how-to-contribute-your-device-integration-guide`,
-			] : []),
-			`${prefix}/contribution/rule-node-development`,
-			`${prefix}/scada-symbol-dev`,
-			`${prefix}/contribution/custom-action-development`,
-			{
-				label: 'Widget Development',
-				collapsed: true,
-				items: [
-					{ label: 'Overview', slug: `${prefix}/contribution/widgets-development` },
-					`${prefix}/contribution/widgets-development/latest-values`,
-					`${prefix}/contribution/widgets-development/time-series`,
-					`${prefix}/contribution/widgets-development/rpc-control`,
-					`${prefix}/contribution/widgets-development/alarm-widget`,
-					`${prefix}/contribution/widgets-development/static-widget`,
-					`${prefix}/contribution/widgets-development/custom-subscription`,
-					`${prefix}/contribution/widgets-development/widget-patterns`,
-					`${prefix}/contribution/widgets-development/advanced`,
-				],
-			},
-		],
-	},
-	{
-		label: 'Releases',
-		collapsed: true,
-		items: [
-			{
-				label: 'Release policy',
-				slug: `${prefix.replace('/user-guide', '/releases')}/release-policy`,
-			},
-			{
-				label: 'Release Table',
-				slug: `${prefix.replace('/user-guide', '/releases')}/releases-table`,
-			},
-			`${prefix.replace('/user-guide', '/releases')}/roadmap`,
-		],
-	},
-	{ label: 'Troubleshooting', slug: `${prefix.replace('/user-guide', '')}/troubleshooting` },
+		{
+			label: 'Digital Twins',
+			collapsed: true,
+			items: [
+				`${prefix}/digital-twins/entities`,
+				`${prefix}/digital-twins/relations`,
+				`${prefix}/digital-twins/attributes`,
+				`${prefix}/digital-twins/time-series-data`,
+			],
+		},
+		{
+			label: 'Devices & Assets',
+			collapsed: true,
+			items: [
+				`${prefix}/devices`,
+				`${prefix}/device-profiles`,
+				`${prefix}/connectivity-guide`,
+				`${prefix}/assets`,
+				`${prefix}/asset-profiles`,
+				`${prefix}/connectivity-status`,
+				`${prefix}/claiming`,
+				`${prefix}/provisioning`,
+				`${prefix}/ota-updates`,
+				`${prefix}/command-and-control`,
+			],
+		},
+		{
+			label: 'Data Visualization',
+			collapsed: true,
+			items: [
+				{ label: 'Key concepts', slug: `${prefix}/data-visualization` },
+				`${prefix}/dashboards`,
+				`${prefix}/widgets`,
+				`${prefix}/time-window`,
+				`${prefix}/aliases`,
+				`${prefix}/filters`,
+				`${prefix}/layouts`,
+				`${prefix}/actions`,
+				`${prefix}/scada`,
+				`${prefix}/units`,
+				`${prefix}/advanced-data-key-configuration`,
+				{ label: 'Solution Templates', slug: `${rp}/solution-templates/overview` },
+				...(isPE
+					? [
+							{
+								label: 'Walkthroughs',
+								collapsed: true,
+								items: [`${prefix}/advanced-guides-for-working-with-dashboard`],
+							},
+						]
+					: []),
+			],
+		},
+		{
+			label: 'Customers & Users',
+			collapsed: true,
+			items: [
+				`${prefix}/multi-tenancy`,
+				`${prefix}/customers`,
+				`${prefix}/users`,
+				`${prefix}/roles`,
+				...(isPE ? [`${prefix}/groups`] : []),
+				`${prefix}/tenant-profiles`,
+			],
+		},
+		{
+			label: 'Alarms & Notifications',
+			collapsed: true,
+			items: [
+				`${prefix}/alarms`,
+				`${prefix}/alarm-rules`,
+				`${prefix}/notifications`,
+				{
+					label: 'Recipes',
+					collapsed: true,
+					items: [
+						`${rp}/alarm-rule-tutorials`,
+						`${rp}/create-clear-alarms`,
+						`${rp}/device-inactivity-alarm`,
+						`${rp}/enrich-alarms-with-details`,
+						`${rp}/send-email-alarm`,
+						`${rp}/send-sms-alarm`,
+						`${rp}/send-slack-alarm`,
+						`${rp}/send-mobile-app-alarm`,
+						`${rp}/send-microsoft-teams-alarm`,
+						`${rp}/send-alarm-email-to-customer`,
+						`${rp}/telegram-alarm-notification`,
+					],
+				},
+			],
+		},
+		{
+			label: 'Data Processing',
+			collapsed: true,
+			items: [
+				{
+					label: 'Calculated Fields',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: `${prefix}/calculated-fields` },
+						{ label: 'Simple', slug: `${prefix}/calculated-fields/simple` },
+						{ label: 'Script', slug: `${prefix}/calculated-fields/script` },
+						{ label: 'Propagation', slug: `${prefix}/calculated-fields/propagation` },
+						{ label: 'Geofencing', slug: `${prefix}/calculated-fields/geofencing` },
+						{
+							label: 'Related Entities Aggregation',
+							slug: `${prefix}/calculated-fields/related-entities-aggregation`,
+						},
+						{
+							label: 'Time Series Aggregation',
+							slug: `${prefix}/calculated-fields/time-series-data-aggregation`,
+						},
+						{
+							label: 'Examples',
+							collapsed: true,
+							items: [
+								`${rp}/aggregate-related-entities`,
+								`${rp}/average-temperature-related-devices`,
+								`${rp}/water-consumption-hourly-delta`,
+								`${rp}/telemetry-delta-two-devices`,
+								`${rp}/telemetry-delta-calculation`,
+							],
+						},
+					],
+				},
+				{
+					label: 'Rule Engine',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: `${prefix}/rule-engine` },
+						{ label: 'Queues', slug: `${prefix}/rule-engine/queues` },
+						{ label: 'Monitoring', slug: `${prefix}/rule-engine/monitoring` },
+						{
+							label: 'Recipes',
+							collapsed: true,
+							items: [
+								`${rp}/python-telemetry`,
+								`${rp}/trigger-related-entities-via-relation`,
+								`${rp}/rpc-reply-with-related-telemetry`,
+								`${rp}/send-rpc-to-related-device`,
+								`${rp}/fetch-weather-data`,
+								`${rp}/validate-incoming-telemetry`,
+								`${rp}/websocket-live-telemetry`,
+								...(isPE ? [`${rp}/add-devices-to-group`] : []),
+							],
+						},
+					],
+				},
+				`${prefix}/rule-nodes`,
+				{
+					label: 'Storage & Retention',
+					collapsed: true,
+					items: [`${rp}/configure-telemetry-ttl`],
+				},
+			],
+		},
+		{
+			label: 'Reporting',
+			collapsed: true,
+			items: [
+				`${prefix}/reporting/getting-started`,
+				`${prefix}/reporting/report-templates`,
+				`${prefix}/reporting/subreports`,
+				`${prefix}/reporting/scheduling`,
+				`${prefix}/reporting/notifications`,
+				`${prefix}/reporting/charts`,
+				`${prefix}/reporting/dashboards`,
+				...(isPE
+					? [
+							{
+								label: 'Recipes',
+								collapsed: true,
+								items: [
+									`${rp}/reporting-embed-dashboard`,
+									`${rp}/reporting-line-chart-temperature`,
+									`${rp}/reporting-subreport-daily-alarms`,
+									`${rp}/reporting-alarm-notification`,
+								],
+							},
+						]
+					: []),
+			],
+		},
+		{
+			label: 'Integrations',
+			collapsed: true,
+			items: [
+				`${prefix}/integrations`,
+				`${prefix}/integrations/integration-types`,
+				`${prefix}/integrations/uplink-data-converter`,
+				`${prefix}/integrations/downlink-data-converter`,
+				`${prefix}/integrations/remote`,
+				{
+					label: 'Recipes',
+					collapsed: true,
+					items: [`${rp}/mqtt-one-way-rpc`, `${rp}/mqtt-two-way-rpc`, `${rp}/opc-ua-airconditioner-monitoring`],
+				},
+			],
+		},
+		{
+			label: 'White-labeling',
+			collapsed: true,
+			items: [
+				{ label: 'General', slug: `${prefix}/white-labeling` },
+				{ label: 'Login', slug: `${prefix}/white-labeling-login` },
+				{ label: 'Mail Templates', slug: `${prefix}/white-labeling-mail` },
+				{ label: 'Custom Translation', slug: `${prefix}/white-labeling-translation` },
+				{ label: 'Custom Menu', slug: `${prefix}/white-labeling-menu` },
+				...(isPE
+					? [
+							{
+								label: 'Recipes',
+								collapsed: true,
+								items: [
+									`${rp}/white-labeling-translate-dashboard`,
+									`${rp}/white-labeling-html-value-card`,
+									`${rp}/white-labeling-post-processing`,
+								],
+							},
+						]
+					: []),
+			],
+		},
+		{
+			label: 'Mobile App Center',
+			collapsed: true,
+			items: [
+				{ label: 'Overview', slug: `${prefix}/mobile-app-center` },
+				{ label: 'Applications', slug: `${prefix}/mobile-app-center/applications` },
+				{ label: 'QR Code Widget', slug: `${prefix}/mobile-app-center/qr-code-widget` },
+			],
+		},
+		{
+			label: 'Other Features',
+			collapsed: true,
+			items: [
+				`${prefix}/image-gallery`,
+				`${prefix}/version-control`,
+				`${prefix}/entity-views`,
+				`${prefix}/scheduler`,
+				`${prefix}/csv-xls-data-export`,
+				...(isPE ? [`${prefix}/file-storage`] : []),
+			],
+		},
+		{
+			label: 'Add-ons',
+			collapsed: true,
+			items: [`${prefix}/add-ons`, `${prefix}/edge-computing`, `${prefix}/trendz-analytics`],
+		},
+		{
+			label: 'Security',
+			collapsed: true,
+			items: [
+				{ label: 'Overview', slug: `${prefix}/security/overview` },
+				{
+					label: 'Authentication',
+					collapsed: true,
+					items: [
+						`${prefix}/security/two-factor-authentication`,
+						`${prefix}/security/oauth-2-support`,
+						`${prefix}/security/self-registration`,
+						`${prefix}/security/api-keys`,
+					],
+				},
+				{
+					label: 'Infrastructure',
+					collapsed: true,
+					items: [`${prefix}/security/domains`, `${prefix}/security/self-signed-ecc`],
+				},
+				{
+					label: 'Administration',
+					collapsed: true,
+					items: [
+						{ label: 'Security Settings', slug: `${prefix}/security` },
+						`${prefix}/security/audit-log`,
+						`${prefix}/security/secrets-storage`,
+					],
+				},
+				...(isPE
+					? [
+							{
+								label: 'Recipes',
+								collapsed: true,
+								items: [
+									`${rp}/rbac-read-only-analyst`,
+									`${rp}/rbac-customer-scoped-access`,
+									`${rp}/rbac-generic-role-scope`,
+									`${rp}/rbac-isolated-device-groups`,
+									`${rp}/rbac-smart-buildings`,
+								],
+							},
+						]
+					: []),
+			],
+		},
+		{
+			label: 'Contribution',
+			collapsed: true,
+			items: [
+				...(!isPE
+					? [
+							`${prefix}/contribution/how-to-contribute`,
+							`${prefix}/contribution/how-to-contribute-your-device-integration-guide`,
+						]
+					: []),
+				`${prefix}/contribution/rule-node-development`,
+				`${prefix}/scada-symbol-dev`,
+				`${prefix}/contribution/custom-action-development`,
+				{
+					label: 'Widget Development',
+					collapsed: true,
+					items: [
+						{ label: 'Overview', slug: `${prefix}/contribution/widgets-development` },
+						`${prefix}/contribution/widgets-development/latest-values`,
+						`${prefix}/contribution/widgets-development/time-series`,
+						`${prefix}/contribution/widgets-development/rpc-control`,
+						`${prefix}/contribution/widgets-development/alarm-widget`,
+						`${prefix}/contribution/widgets-development/static-widget`,
+						`${prefix}/contribution/widgets-development/custom-subscription`,
+						`${prefix}/contribution/widgets-development/widget-patterns`,
+						`${prefix}/contribution/widgets-development/advanced`,
+					],
+				},
+			],
+		},
+		{
+			label: 'Releases',
+			collapsed: true,
+			items: [
+				{
+					label: 'Release policy',
+					slug: `${prefix.replace('/user-guide', '/releases')}/release-policy`,
+				},
+				{
+					label: 'Release Table',
+					slug: `${prefix.replace('/user-guide', '/releases')}/releases-table`,
+				},
+				`${prefix.replace('/user-guide', '/releases')}/roadmap`,
+			],
+		},
+		{ label: 'Troubleshooting', slug: `${prefix.replace('/user-guide', '')}/troubleshooting` },
 	];
 };
 
@@ -353,9 +367,7 @@ const edgeInstallationItems = (prefix: string) => {
 			label: 'Cluster',
 			items: [`${prefix}/installation/docker-compose-setup`],
 		},
-		...(isPE
-			? []
-			: [{ label: 'Building from Sources', slug: `${prefix}/installation/building-from-source` }]),
+		...(isPE ? [] : [{ label: 'Building from Sources', slug: `${prefix}/installation/building-from-source` }]),
 		{ label: 'Upgrade instructions', slug: `${prefix}/installation/upgrade-instructions` },
 	];
 };
@@ -451,12 +463,27 @@ const recipeItems = (prefix: string, extraProcessingItems: string[] = []) => [
 	{
 		label: 'Rule Engine',
 		collapsed: true,
-		items: [`${prefix}/python-telemetry`, `${prefix}/trigger-related-entities-via-relation`, `${prefix}/rpc-reply-with-related-telemetry`, `${prefix}/send-rpc-to-related-device`, `${prefix}/fetch-weather-data`, `${prefix}/validate-incoming-telemetry`, `${prefix}/websocket-live-telemetry`, ...extraProcessingItems],
+		items: [
+			`${prefix}/python-telemetry`,
+			`${prefix}/trigger-related-entities-via-relation`,
+			`${prefix}/rpc-reply-with-related-telemetry`,
+			`${prefix}/send-rpc-to-related-device`,
+			`${prefix}/fetch-weather-data`,
+			`${prefix}/validate-incoming-telemetry`,
+			`${prefix}/websocket-live-telemetry`,
+			...extraProcessingItems,
+		],
 	},
 	{
 		label: 'Calculated Fields',
 		collapsed: true,
-		items: [`${prefix}/aggregate-related-entities`, `${prefix}/average-temperature-related-devices`, `${prefix}/water-consumption-hourly-delta`, `${prefix}/telemetry-delta-two-devices`, `${prefix}/telemetry-delta-calculation`],
+		items: [
+			`${prefix}/aggregate-related-entities`,
+			`${prefix}/average-temperature-related-devices`,
+			`${prefix}/water-consumption-hourly-delta`,
+			`${prefix}/telemetry-delta-two-devices`,
+			`${prefix}/telemetry-delta-calculation`,
+		],
 	},
 	{
 		label: 'Storage & Retention',
@@ -466,7 +493,19 @@ const recipeItems = (prefix: string, extraProcessingItems: string[] = []) => [
 	{
 		label: 'Alarms & Notifications',
 		collapsed: true,
-		items: [`${prefix}/alarm-rule-tutorials`, `${prefix}/create-clear-alarms`, `${prefix}/device-inactivity-alarm`, `${prefix}/enrich-alarms-with-details`, `${prefix}/send-email-alarm`, `${prefix}/send-sms-alarm`, `${prefix}/send-slack-alarm`, `${prefix}/send-mobile-app-alarm`, `${prefix}/send-microsoft-teams-alarm`, `${prefix}/send-alarm-email-to-customer`, `${prefix}/telegram-alarm-notification`],
+		items: [
+			`${prefix}/alarm-rule-tutorials`,
+			`${prefix}/create-clear-alarms`,
+			`${prefix}/device-inactivity-alarm`,
+			`${prefix}/enrich-alarms-with-details`,
+			`${prefix}/send-email-alarm`,
+			`${prefix}/send-sms-alarm`,
+			`${prefix}/send-slack-alarm`,
+			`${prefix}/send-mobile-app-alarm`,
+			`${prefix}/send-microsoft-teams-alarm`,
+			`${prefix}/send-alarm-email-to-customer`,
+			`${prefix}/telegram-alarm-notification`,
+		],
 	},
 ];
 
@@ -774,10 +813,7 @@ const paasReferenceItems = (prefix: string): SidebarConfig => {
 				{
 					label: 'Alarm Widgets',
 					collapsed: true,
-					items: [
-						`${prefix}/widgets/alarm-widgets/alarms-table`,
-						`${prefix}/widgets/alarm-widgets/alarm-count`,
-					],
+					items: [`${prefix}/widgets/alarm-widgets/alarms-table`, `${prefix}/widgets/alarm-widgets/alarm-count`],
 				},
 				{
 					label: 'Analogue Gauges',
@@ -843,18 +879,12 @@ const paasReferenceItems = (prefix: string): SidebarConfig => {
 				{
 					label: 'Count Widgets',
 					collapsed: true,
-					items: [
-						`${prefix}/widgets/count-widgets/alarm-count`,
-						`${prefix}/widgets/count-widgets/entity-count`,
-					],
+					items: [`${prefix}/widgets/count-widgets/alarm-count`, `${prefix}/widgets/count-widgets/entity-count`],
 				},
 				{
 					label: 'Files',
 					collapsed: true,
-					items: [
-						`${prefix}/widgets/files/files`,
-						`${prefix}/widgets/files/dashboard-reports`,
-					],
+					items: [`${prefix}/widgets/files/files`, `${prefix}/widgets/files/dashboard-reports`],
 				},
 				{
 					label: 'HTML Widgets',
@@ -916,9 +946,7 @@ const paasReferenceItems = (prefix: string): SidebarConfig => {
 								{
 									label: 'Leak Sensors',
 									collapsed: true,
-									items: [
-										`${prefix}/widgets/scada/traditional-fluid-system/leak-sensor`,
-									],
+									items: [`${prefix}/widgets/scada/traditional-fluid-system/leak-sensor`],
 								},
 								{
 									label: 'Pipes',
@@ -954,9 +982,7 @@ const paasReferenceItems = (prefix: string): SidebarConfig => {
 								{
 									label: 'Pools',
 									collapsed: true,
-									items: [
-										`${prefix}/widgets/scada/traditional-fluid-system/pool`,
-									],
+									items: [`${prefix}/widgets/scada/traditional-fluid-system/pool`],
 								},
 								{
 									label: 'Pumps',
@@ -1126,10 +1152,7 @@ const paasReferenceItems = (prefix: string): SidebarConfig => {
 				{
 					label: 'Scheduling',
 					collapsed: true,
-					items: [
-						`${prefix}/widgets/scheduling/scheduler-events`,
-						`${prefix}/widgets/scheduling/reports-schedule`,
-					],
+					items: [`${prefix}/widgets/scheduling/scheduler-events`, `${prefix}/widgets/scheduling/reports-schedule`],
 				},
 				{
 					label: 'Video Streaming',
@@ -1361,10 +1384,7 @@ const referenceItems = (prefix: string, extraConfigItems: SidebarConfig = []) =>
 				{
 					label: 'Alarm Widgets',
 					collapsed: true,
-					items: [
-						`${prefix}/widgets/alarm-widgets/alarms-table`,
-						`${prefix}/widgets/alarm-widgets/alarm-count`,
-					],
+					items: [`${prefix}/widgets/alarm-widgets/alarms-table`, `${prefix}/widgets/alarm-widgets/alarm-count`],
 				},
 				{
 					label: 'Analogue Gauges',
@@ -1430,21 +1450,17 @@ const referenceItems = (prefix: string, extraConfigItems: SidebarConfig = []) =>
 				{
 					label: 'Count Widgets',
 					collapsed: true,
-					items: [
-						`${prefix}/widgets/count-widgets/alarm-count`,
-						`${prefix}/widgets/count-widgets/entity-count`,
-					],
+					items: [`${prefix}/widgets/count-widgets/alarm-count`, `${prefix}/widgets/count-widgets/entity-count`],
 				},
-				...(prefix.includes('/pe/') ? [
-					{
-						label: 'Files',
-						collapsed: true,
-						items: [
-							`${prefix}/widgets/files/files`,
-							`${prefix}/widgets/files/dashboard-reports`,
-						],
-					},
-				] : []),
+				...(prefix.includes('/pe/')
+					? [
+							{
+								label: 'Files',
+								collapsed: true,
+								items: [`${prefix}/widgets/files/files`, `${prefix}/widgets/files/dashboard-reports`],
+							},
+						]
+					: []),
 				{
 					label: 'HTML Widgets',
 					collapsed: true,
@@ -1505,9 +1521,7 @@ const referenceItems = (prefix: string, extraConfigItems: SidebarConfig = []) =>
 								{
 									label: 'Leak Sensors',
 									collapsed: true,
-									items: [
-										`${prefix}/widgets/scada/traditional-fluid-system/leak-sensor`,
-									],
+									items: [`${prefix}/widgets/scada/traditional-fluid-system/leak-sensor`],
 								},
 								{
 									label: 'Pipes',
@@ -1543,9 +1557,7 @@ const referenceItems = (prefix: string, extraConfigItems: SidebarConfig = []) =>
 								{
 									label: 'Pools',
 									collapsed: true,
-									items: [
-										`${prefix}/widgets/scada/traditional-fluid-system/pool`,
-									],
+									items: [`${prefix}/widgets/scada/traditional-fluid-system/pool`],
 								},
 								{
 									label: 'Pumps',
@@ -1712,16 +1724,18 @@ const referenceItems = (prefix: string, extraConfigItems: SidebarConfig = []) =>
 						`${prefix}/widgets/tables/persistent-table`,
 					],
 				},
-				...(prefix.includes('/pe/') ? [
-					{
-						label: 'Scheduling',
-						collapsed: true,
-						items: [
-							`${prefix}/widgets/scheduling/scheduler-events`,
-							`${prefix}/widgets/scheduling/reports-schedule`,
-						],
-					},
-				] : []),
+				...(prefix.includes('/pe/')
+					? [
+							{
+								label: 'Scheduling',
+								collapsed: true,
+								items: [
+									`${prefix}/widgets/scheduling/scheduler-events`,
+									`${prefix}/widgets/scheduling/reports-schedule`,
+								],
+							},
+						]
+					: []),
 				{
 					label: 'Video Streaming',
 					collapsed: true,
@@ -1782,10 +1796,7 @@ const mainSidebarItems = (
 			{
 				label: 'ThingsBoard CLI',
 				collapsed: false,
-				items: [
-					`${prefix}/user-guide/cli`,
-					`${prefix}/user-guide/cli-solutions`,
-				],
+				items: [`${prefix}/user-guide/cli`, `${prefix}/user-guide/cli-solutions`],
 			},
 			`${prefix}/user-guide/ai-solution-creator`,
 			`${prefix}/user-guide/ai-assistant`,
@@ -1801,19 +1812,20 @@ const mainSidebarItems = (
 			{
 				label: 'Workflow Automation',
 				collapsed: false,
-				items: [
-					`${prefix}/user-guide/mcp-server`,
-					`${prefix}/user-guide/n8n-node`,
-				],
+				items: [`${prefix}/user-guide/mcp-server`, `${prefix}/user-guide/n8n-node`],
 			},
 		],
 	},
-	...(includeRecipes ? [{
-		label: 'Recipes',
-		collapsed: true,
-		translations: { uk: 'Рецепти' },
-		items: [...recipeItems(`${prefix}/recipes`, extraProcessingItems), ...extraRecipeItems],
-	}] : []),
+	...(includeRecipes
+		? [
+				{
+					label: 'Recipes',
+					collapsed: true,
+					translations: { uk: 'Рецепти' },
+					items: [...recipeItems(`${prefix}/recipes`, extraProcessingItems), ...extraRecipeItems],
+				},
+			]
+		: []),
 	{
 		label: 'Installation',
 		collapsed: true,
@@ -1838,10 +1850,7 @@ export const opensourceSidebar: SidebarConfig = mainSidebarItems('docs', [], [],
 export const peSidebar: SidebarConfig = mainSidebarItems(
 	'docs/pe',
 	[],
-	[
-		'docs/pe/reference/configuration/ie-executor-config',
-		'docs/pe/reference/configuration/report-service-config',
-	],
+	['docs/pe/reference/configuration/ie-executor-config', 'docs/pe/reference/configuration/report-service-config'],
 	[],
 	{ includeRecipes: false }
 );
@@ -2196,10 +2205,7 @@ export const paasSidebar: SidebarConfig = [
 			{
 				label: 'ThingsBoard CLI',
 				collapsed: false,
-				items: [
-					'docs/paas/user-guide/cli',
-					'docs/paas/user-guide/cli-solutions',
-				],
+				items: ['docs/paas/user-guide/cli', 'docs/paas/user-guide/cli-solutions'],
 			},
 			'docs/paas/user-guide/ai-solution-creator',
 			'docs/paas/user-guide/ai-assistant',
@@ -2215,10 +2221,7 @@ export const paasSidebar: SidebarConfig = [
 			{
 				label: 'Workflow Automation',
 				collapsed: false,
-				items: [
-					'docs/paas/user-guide/mcp-server',
-					'docs/paas/user-guide/n8n-node',
-				],
+				items: ['docs/paas/user-guide/mcp-server', 'docs/paas/user-guide/n8n-node'],
 			},
 		],
 	},
@@ -2454,10 +2457,7 @@ export const paasEuSidebar: SidebarConfig = [
 					{
 						label: 'Recipes',
 						collapsed: true,
-						items: [
-							'docs/paas/eu/recipes/mqtt-one-way-rpc',
-							'docs/paas/eu/recipes/mqtt-two-way-rpc',
-						],
+						items: ['docs/paas/eu/recipes/mqtt-one-way-rpc', 'docs/paas/eu/recipes/mqtt-two-way-rpc'],
 					},
 				],
 			},
@@ -2595,10 +2595,7 @@ export const paasEuSidebar: SidebarConfig = [
 			{
 				label: 'ThingsBoard CLI',
 				collapsed: false,
-				items: [
-					'docs/paas/eu/user-guide/cli',
-					'docs/paas/eu/user-guide/cli-solutions',
-				],
+				items: ['docs/paas/eu/user-guide/cli', 'docs/paas/eu/user-guide/cli-solutions'],
 			},
 			'docs/paas/eu/user-guide/ai-solution-creator',
 			'docs/paas/eu/user-guide/ai-assistant',
@@ -2614,10 +2611,7 @@ export const paasEuSidebar: SidebarConfig = [
 			{
 				label: 'Workflow Automation',
 				collapsed: false,
-				items: [
-					'docs/paas/eu/user-guide/mcp-server',
-					'docs/paas/eu/user-guide/n8n-node',
-				],
+				items: ['docs/paas/eu/user-guide/mcp-server', 'docs/paas/eu/user-guide/n8n-node'],
 			},
 		],
 	},
@@ -2629,10 +2623,7 @@ export const paasEuSidebar: SidebarConfig = [
 	{
 		label: 'Reference',
 		collapsed: true,
-		items: [
-			...paasReferenceItems('docs/paas/eu/reference'),
-			'docs/paas/eu/reference/subscriptions',
-		],
+		items: [...paasReferenceItems('docs/paas/eu/reference'), 'docs/paas/eu/reference/subscriptions'],
 	},
 ];
 
@@ -2674,10 +2665,7 @@ export const edgeSidebar: SidebarConfig = [
 					{
 						label: 'Connect Edge behind a proxy',
 						collapsed: true,
-						items: [
-							'docs/edge/user-guide/edge-proxy/debian',
-							'docs/edge/user-guide/edge-proxy/docker',
-						],
+						items: ['docs/edge/user-guide/edge-proxy/debian', 'docs/edge/user-guide/edge-proxy/docker'],
 					},
 					'docs/edge/user-guide/grpc-ssl',
 					'docs/edge/user-guide/iot-gateway',
@@ -2743,10 +2731,7 @@ export const edgeSidebar: SidebarConfig = [
 			{
 				label: 'Sending Data',
 				collapsed: true,
-				items: [
-					'docs/edge/recipes/send-telemetry-mqtt',
-					'docs/edge/recipes/data-filtering-traffic-reduce',
-				],
+				items: ['docs/edge/recipes/send-telemetry-mqtt', 'docs/edge/recipes/data-filtering-traffic-reduce'],
 			},
 			{
 				label: 'Cloud Sync',
@@ -2829,10 +2814,7 @@ export const edgeSidebar: SidebarConfig = [
 			{
 				label: 'Server-side REST Clients',
 				collapsed: true,
-				items: [
-					'docs/edge/reference/java-client',
-					'docs/edge/reference/python-client',
-				],
+				items: ['docs/edge/reference/java-client', 'docs/edge/reference/python-client'],
 			},
 			{
 				label: 'MCP Server',
@@ -3081,10 +3063,7 @@ export const edgePeSidebar: SidebarConfig = [
 					{
 						label: 'Connect Edge behind a proxy',
 						collapsed: true,
-						items: [
-							'docs/edge/pe/user-guide/edge-proxy/debian',
-							'docs/edge/pe/user-guide/edge-proxy/docker',
-						],
+						items: ['docs/edge/pe/user-guide/edge-proxy/debian', 'docs/edge/pe/user-guide/edge-proxy/docker'],
 					},
 					'docs/edge/pe/user-guide/grpc-ssl',
 					'docs/edge/pe/user-guide/iot-gateway',
@@ -3183,10 +3162,7 @@ export const edgePeSidebar: SidebarConfig = [
 			{
 				label: 'Sending Data',
 				collapsed: true,
-				items: [
-					'docs/edge/pe/recipes/send-telemetry-mqtt',
-					'docs/edge/pe/recipes/data-filtering-traffic-reduce',
-				],
+				items: ['docs/edge/pe/recipes/send-telemetry-mqtt', 'docs/edge/pe/recipes/data-filtering-traffic-reduce'],
 			},
 			{
 				label: 'Cloud Sync',
@@ -3269,10 +3245,7 @@ export const edgePeSidebar: SidebarConfig = [
 			{
 				label: 'Server-side REST Clients',
 				collapsed: true,
-				items: [
-					'docs/edge/pe/reference/java-client',
-					'docs/edge/pe/reference/python-client',
-				],
+				items: ['docs/edge/pe/reference/java-client', 'docs/edge/pe/reference/python-client'],
 			},
 			{
 				label: 'MCP Server',
@@ -3755,17 +3728,53 @@ export const trendzSidebar: SidebarConfig = [
 					'docs/trendz/calculations/batch',
 					'docs/trendz/calculations/native',
 					'docs/trendz/calculations/save-to-thingsboard',
-					'docs/trendz/calculations/time-to-value',
+					{ slug: 'docs/trendz/prediction/intents/time-to-threshold', label: 'Time to Threshold' },
 				],
 			},
 			{
 				label: 'Prediction',
 				collapsed: true,
+				badge: { text: 'NEW', class: 'tb-badge' },
 				items: [
-					'docs/trendz/prediction',
-					'docs/trendz/predict-with-python-models',
-					'docs/trendz/predict-remaining-time',
-					'docs/trendz/prediction-save-to-tb',
+					{ slug: 'docs/trendz/prediction/overview', label: 'Overview' },
+					{ slug: 'docs/trendz/prediction/getting-started', label: 'Getting Started' },
+					{
+						label: 'Prediction Intents',
+						collapsed: true,
+						badge: { text: 'NEW', class: 'tb-badge' },
+						items: [
+							{ slug: 'docs/trendz/prediction/intents/forecast', label: 'Forecast' },
+							{ slug: 'docs/trendz/prediction/intents/time-to-threshold', label: 'Time to Threshold' },
+							{ slug: 'docs/trendz/prediction/intents/period-total', label: 'Period Total' },
+							{ slug: 'docs/trendz/prediction/intents/hit-target', label: 'Hit Target' },
+						],
+					},
+					{ slug: 'docs/trendz/prediction/interface', label: 'Interface Overview' },
+					{ slug: 'docs/trendz/prediction/models-and-accuracy', label: 'Models & Accuracy' },
+					{ slug: 'docs/trendz/prediction/monitoring', label: 'Monitoring & Alarms' },
+					{ slug: 'docs/trendz/prediction/visualization', label: 'Visualizations' },
+				],
+			},
+			{
+				label: 'Vibration Analysis',
+				collapsed: true,
+				badge: { text: 'NEW', class: 'tb-badge' },
+				items: [
+					{ slug: 'docs/trendz/vibration/overview', label: 'Overview' },
+					{ slug: 'docs/trendz/vibration/getting-started', label: 'Getting Started' },
+					{ slug: 'docs/trendz/vibration/basics', label: 'Vibration Analysis Basics' },
+					{
+						label: 'Interface Overview',
+						collapsed: true,
+						items: [
+							{ slug: 'docs/trendz/vibration/interface/workspace', label: 'Workspace' },
+							{ slug: 'docs/trendz/vibration/interface/overview-tab', label: 'Overview Tab' },
+							{ slug: 'docs/trendz/vibration/interface/monitoring-tab', label: 'Monitoring Tab' },
+							{ slug: 'docs/trendz/vibration/interface/analyzer-tab', label: 'Analyzer Tab' },
+							{ slug: 'docs/trendz/vibration/interface/properties-tab', label: 'Properties Tab' },
+						],
+					},
+					{ slug: 'docs/trendz/vibration/monitoring', label: 'Monitoring & Alarms' },
 				],
 			},
 			{
@@ -3800,11 +3809,7 @@ export const trendzSidebar: SidebarConfig = [
 			{
 				label: 'Other',
 				collapsed: true,
-				items: [
-					'docs/trendz/topology-discovery',
-					'docs/trendz/tasks-service',
-					'docs/trendz/rest-api',
-				],
+				items: ['docs/trendz/topology-discovery', 'docs/trendz/tasks-service', 'docs/trendz/rest-api'],
 			},
 			{
 				label: 'Versions & Support',
@@ -3898,11 +3903,7 @@ export const licenseSidebar: SidebarConfig = [
 	{
 		label: 'License Management',
 		translations: { uk: 'Управління ліцензіями' },
-		items: [
-			'docs/license-server/subscription',
-			'docs/license-server/perpetual',
-			'docs/license-server/instance',
-		],
+		items: ['docs/license-server/subscription', 'docs/license-server/perpetual', 'docs/license-server/instance'],
 	},
 	{
 		label: 'Account & Billing',

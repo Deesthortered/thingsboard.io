@@ -1,0 +1,226 @@
+import { Aside } from '@astrojs/starlight/components';
+import DocLink from '@components/DocLink.astro';
+import ImageGallery from '@components/ImageGallery.astro';
+import InstallationCardGrid from '@components/InstallationCardGrid.astro';
+
+The **Properties** tab holds everything the model is configured with. Every verdict on the other tabs is only as
+right as these settings: a wrong sample rate shifts every frequency, a missing shaft speed blanks the bands and the
+shaft faults, and a bearing without its fault frequencies is never matched.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties.webp',
+    alt: 'Properties tab of a vibration model with the cards Name, Entity selection, Vibration telemetry, Scan settings, Machine details, Envelope band, and Display units',
+    caption: 'The Properties tab. Required cards first, optional context after them.',
+  },
+]} />
+
+Use it to fix an input the wizard got wrong, to add what the model lacks, such as the shaft speed, the ISO class,
+or the bearings, or to change which machines the model covers. Some changes are free, others rescan the model,
+and Trendz tells you which before it saves.
+
+## Layout
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/properties-tab-layout.webp',
+    alt: 'Properties tab of the Conveyor drives vibration model with nine numbered areas: Name, Entity selection, Vibration telemetry, Scan settings, Machine details, Envelope band, Display units, Bearings, and the Reset and Save buttons',
+    caption: 'The Properties tab: eight cards (1–8), and Reset and Save (9).',
+  },
+]} />
+
+| # | Area | Contents |
+|---|------|----------|
+| **1** | **[Name](#name)** | The model name |
+| **2** | **[Entity selection](#entity-selection)** | The profile, and which of its items to analyze |
+| **3** | **[Vibration telemetry](#vibration-telemetry)** | The waveform key, its unit, and the axes |
+| **4** | **[Scan settings](#scan-settings)** | Points per second, and how far back scans reach |
+| **5** | **[Machine details](#machine-details)** | ISO class and shaft speed |
+| **6** | **[Envelope band](#envelope-band)** | The band-pass range of the envelope spectrum |
+| **7** | **[Display units](#display-units)** | How readings are shown on every tab |
+| **8** | **[Bearings](#bearings)** | The bearings whose fault frequencies are marked |
+| **9** | **[Reset and Save](#what-a-change-costs)** | Discard or apply the edits |
+
+Each card carries a chip: **Required** for what the model cannot run without, **Optional** for the rest, and
+**n of m set** where a card is partly filled. Editing anything enables **Reset** and **Save**.
+
+## Components
+
+### Name
+
+The name the model is listed under. Renaming costs nothing: the save goes straight through.
+
+### Entity selection
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-entity.webp',
+    alt: 'Entity selection card with the entity type Device, the profile Conveyor drives, and Items to analyze set to All items',
+    caption: 'What the model covers: a profile, and which of its items to analyze.',
+  },
+]} />
+
+- The left select chooses **Device** or **Asset**, the right one the profile.
+- **Items to analyze** is either **All items**, which covers every machine the profile holds, including ones
+  added later, or **Manual selection**, which covers the machines you list.
+- In **All items** mode, machines deleted from the model are listed under **Excluded items**. Restore one there
+  and it is scanned again from the next scan.
+
+### Vibration telemetry
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-telemetry.webp',
+    alt: 'Vibration telemetry card with the signal unit g, the telemetry key vibration, and one axis labelled Axial',
+    caption: 'The signal: its unit, the key that holds it, and one row per axis.',
+  },
+]} />
+
+- **Signal unit** is the unit the recording is in, and the telemetry key is where the waveform is stored. The
+  format the values have to arrive in is described in
+  <DocLink product={props.product} path='vibration/getting-started'>Getting Started</DocLink>.
+- **Axes** lists one row per axis the value holds. The labels are yours to rename; how many there are, and in
+  which order, comes from the data.
+
+### Scan settings
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-scan.webp',
+    alt: 'Scan settings card with points per second set manually to 25600 and a scan period',
+    caption: 'How fast the sensor records, and how far back scans reach.',
+  },
+]} />
+
+- **Points per second** is the sample rate of the recording, either one **Manual** value for the model or
+  **From attribute** for a fleet whose machines differ. Every frequency on every chart is derived from it.
+- **Scan period** is how far back future scans cover.
+
+### Machine details
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-machine.webp',
+    alt: 'Machine details card with the ISO class set manually to Class IV and the shaft speed read from the attribute shaftSpeedRpm',
+    caption: 'The two settings that turn readings into verdicts.',
+  },
+]} />
+
+- **ISO class** grades the velocity RMS into zones A to D. **Manual** applies one class to every machine;
+  **From attribute** reads it per machine.
+- **Shaft speed** is read from a **Manual** value, an attribute, or a telemetry key. Bands, orders, and bearing
+  fault frequencies are all measured against it, so most of the Overview tab depends on it.
+
+### Envelope band
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-envelope.webp',
+    alt: 'Envelope band card with Auto selected and the resolved band from 500 to 12800 Hz',
+    caption: 'The band-pass range the envelope is taken from.',
+  },
+]} />
+
+- **Auto** band-passes from 500 Hz up to half the points per second, which is the range bearing impacts excite.
+  **Manual** takes the two limits from you.
+- The band is baked into every stored envelope spectrum, so changing it rescans the model.
+
+### Display units
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-units.webp',
+    alt: 'Display units card with acceleration in g, velocity in millimetres per second, displacement in micrometres, and frequency in hertz',
+    caption: 'How stored readings are shown, across every tab of the model.',
+  },
+]} />
+
+| Field | Options |
+|-------|---------|
+| **Acceleration** | g, mm/s², in/s² |
+| **Velocity** | mm/s, in/s |
+| **Displacement** | µm, mil |
+| **Frequency** | Hz, RPM |
+
+The steps, and what they change in the Analyzer, are shown under
+<DocLink product={props.product} path='vibration/interface/analyzer-tab#display-units'>Analyzer tab</DocLink>.
+
+### Bearings
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-bearings.webp',
+    alt: 'Bearings card with one bearing read from an attribute and a preview of the parsed BPFO, BPFI, BSF, and FTF orders with their frequencies',
+    caption: 'A bearing read from an attribute, with the fault frequencies it resolves to.',
+  },
+]} />
+
+- A bearing is defined by its **Fault frequencies** as orders of shaft speed, by its **Geometry**, or read
+  **From attribute** as JSON per machine. The card states both accepted formats.
+- The preview shows what was parsed for one machine and names it, so a wrong attribute is visible before you
+  save. Other machines may hold a different bearing in the same attribute.
+- The orders resolve to hertz only with a shaft speed, which is why both settings gate the same views.
+- What the four frequencies mean is described in
+  <DocLink product={props.product} path='vibration/basics#bearing-faults-and-envelope-analysis'>Vibration Analysis Basics</DocLink>.
+
+## What a change costs
+
+Saving is not always free: some settings describe the model, others describe how every stored sample was read.
+Trendz previews the cost of a save and asks before anything is lost.
+
+| Change | What it costs |
+|--------|---------------|
+| Name, ISO class, display units | Nothing. The save goes straight through |
+| Shaft speed, or bearings on a model that has a speed | Stored spectra are graded again against the new value. No waveform is read again |
+| Removing the shaft speed | Bands, shaft faults, and bearing defects are cleared for every scanned sample |
+| Items added or removed | Added machines are scanned; a removed machine loses its samples, spectra, and alarms |
+| Scan period | Future scans use the new window, and a widened period is scanned |
+| Profile, telemetry key, signal unit, points per second, envelope band | Every stored metric and spectrum is deleted, and a fresh scan runs over the scan period |
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties-confirm.webp',
+    alt: 'Confirmation dialog on the Properties tab reading that every sample already scanned is re-graded against the new shaft speed and bearings, with a create copy checkbox, Cancel, and Save changes',
+    caption: 'The confirmation names what the save costs, and offers to put the change in a copy instead.',
+  },
+]} />
+
+- The dialog names every consequence of this one save, including the alarm rules that would stop watching
+  because the measurement they read is gone.
+- **I want to create a copy of this model** applies the change to a duplicate and leaves this model as it is, the
+  same as <DocLink product={props.product} path='vibration/interface/workspace#duplicate'>Duplicate</DocLink>.
+- A save that reads the waveforms again is confirmed with **Wipe & rescan** instead of **Save changes**.
+
+<Aside type="danger">
+**Wipe & rescan** cannot be undone. Every metric and spectrum computed for the model is deleted, and a fresh
+scan runs over the configured scan period.
+</Aside>
+
+## Explore other tabs
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'vibration/interface/overview-tab',
+    title: 'Overview Tab',
+    description: 'The verdict for each machine: ISO zone, shaft problem, and bearing defect.',
+    icon: '/src/assets/images/trendz/vibration/icon-gauge.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+  {
+    path: 'vibration/interface/monitoring-tab',
+    title: 'Monitoring Tab',
+    description: 'Each machine over time against its alarm rules, with the alarms raised.',
+    icon: '/src/assets/images/trendz/vibration/icon-alarm.svg',
+    accent: '#E21C46',
+    hero: true,
+  },
+  {
+    path: 'vibration/interface/analyzer-tab',
+    title: 'Analyzer Tab',
+    description: 'One sample in full: its waveform, spectrum, and envelope spectrum.',
+    icon: '/src/assets/images/trendz/vibration/icon-spectrum.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+]} />

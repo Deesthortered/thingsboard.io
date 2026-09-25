@@ -1,0 +1,434 @@
+import ImageGallery from '@components/ImageGallery.astro';
+import InstallationCardGrid from '@components/InstallationCardGrid.astro';
+import DocLink from '@components/DocLink.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+This page explains what happens to a prediction model after you build it: how it stays up to date, which settings
+it has, how accurate it is, and which algorithm does the learning. Trendz trains the model separately for every
+device of the profile, so ten meters get ten models, each learning its own history.
+
+To build your first model, start with
+<DocLink product={props.product} path="prediction/getting-started">Getting started</DocLink>.
+
+## Refresh and retrain
+
+A model is built once and then kept up to date by refreshes. A retrain starts it over.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma-lifecycle.svg',
+    alt: 'Model lifecycle: a build runs once and leads to refresh, which repeats every period; with Scheduled retrain on the refresh also learns first; a retrain fits the model again on the whole training period when needed and then returns to refreshing',
+    caption: 'Build once, refresh every period, retrain when the model no longer fits.',
+  },
+]} />
+
+| Run | What it does | When it runs |
+|-----|--------------|--------------|
+| **Build** | Learns from the training period, measures accuracy, and makes the first forecast | Once, when you click **Build model**, or **Apply changes** on the Properties tab |
+| **Refresh** | Reads the new readings and forecasts again from the latest one. With **Scheduled retrain** on, it also learns from them first | Every period, with **Periodic refresh** on, or when you click **Refresh** |
+| **Retrain** | Learns again from the whole training period, like a new build | When you click **Retrain**, or on every refresh with **Scheduled retrain** on |
+
+**What happens without a refresh.** The model keeps the forecast from its last run:
+
+- The forecast gets older every day. A 7-day forecast made a week ago covers a week that is already over.
+- Event rules and targets are not checked, so no alarms are raised or cleared.
+- Telemetry saved to ThingsBoard stops updating, and dashboards show an old forecast.
+
+Turn on **Periodic refresh** for every model you rely on. It is set in
+<DocLink product={props.product} path="prediction/monitoring">Monitoring &amp; Alarms</DocLink>.
+
+**When to retrain.** A refresh is enough most of the time. Retrain when:
+
+- The device changed how it works: new equipment, a new schedule, a different load.
+- Past readings were corrected. A refresh only learns from new readings, so it never sees the fix.
+- An item failed or had too little data, and the cause is fixed.
+- Accuracy dropped and stays low.
+
+You can refresh or retrain one item from its row menu, or the whole model from the **Data status** card.
+**Retrain all failed** retrains every item that is not trained yet, including devices added to the profile
+later.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-data-status.webp',
+    alt: 'Data status card on the Result tab highlighted, with the Refresh item, Refresh all, and Retrain all failed buttons',
+    caption: 'The Data status card.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-item-menu.webp',
+    alt: 'Items table on the Result tab with the row menu open, offering Refresh, Retrain, and Delete',
+    caption: 'The row menu of one item.',
+  },
+]} />
+
+The **Training** column of the items table shows the state of each item:
+
+| Status | Meaning |
+|--------|---------|
+| **Trained** | Ready. Its forecast is published |
+| **Training** | Being trained right now |
+| **Insufficient data** | Less history than the prediction horizon. It trains on its own once there is enough |
+| **Failed** | Training failed. Click the status to see why |
+| **Cancelled** | The run stopped before this item. The next run picks it up |
+
+## Model properties
+
+The **Properties** tab holds every setting of the model. Change what you need and click **Apply changes**.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-properties.webp',
+    alt: 'Properties tab of the Site energy forecast model with the General, Forecast, Prediction method, Aggregation, and Advanced cards',
+    caption: 'The Properties tab.',
+  },
+]} />
+
+| Card | Field | Description |
+|------|-------|-------------|
+| **General** | **Model name** | The name in the model list |
+| | **Entity** | The device or asset profile the model learns from |
+| | **Predicted field** | The telemetry key to predict |
+| | **Items to train** | **All items**: every item of the profile, including devices added later. **Manual selection**: only the items you pick |
+| **Forecast** | **Prediction horizon** | How far ahead to predict, for example 7 days |
+| | **Training period** | How much history to learn from, for example the last 90 days |
+| **Prediction method** | **Method** | The algorithm, described in [Prediction models](#prediction-models) |
+| | **Additional fields for prediction** | Other telemetry of the same devices that helps explain the predicted one, for example outdoor temperature for heating energy |
+| **Aggregation** | **Aggregate by** | How the readings inside one interval become one value: sum, average, min, max, or count |
+| | **Count** and **Grouping interval** | The length of that interval, for example 1 hour. The forecast has the same step |
+| **Advanced** | **Clamp forecast to a range** | Keeps the forecast between **Min** and **Max**, for example a tank level that cannot go below 0 |
+
+<Aside type="tip">
+Train on at least 3 to 4 times more history than the prediction horizon. A 7-day forecast needs about a month of
+history.
+</Aside>
+
+**Excluded items.** With **All items**, you can still remove devices from the model. A removed device becomes an
+**Excluded item**: it is not trained or refreshed, but its history stays. Add it back and it shows
+**Will be restored** until the next training run.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-prop-general.webp',
+    alt: 'General card highlighted, with the model name, entity, predicted field, and items to train',
+    caption: 'General.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-prop-items.webp',
+    alt: 'Items to train select open, offering All items and Manual selection',
+    caption: 'Items to train.',
+  },
+]} />
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-prop-forecast.webp',
+    alt: 'Forecast card highlighted, with a prediction horizon of 7 days and a training period of the last 90 days',
+    caption: 'Forecast.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-prop-method.webp',
+    alt: 'Prediction method card highlighted, with the six methods and additional fields',
+    caption: 'Prediction method.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-prop-aggregation.webp',
+    alt: 'Aggregation card highlighted, with Aggregate by Sum, Count 1, and Grouping interval Hourly',
+    caption: 'Aggregation.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-prop-advanced.webp',
+    alt: 'Advanced card highlighted, with the Clamp forecast to a range switch',
+    caption: 'Advanced.',
+  },
+]} />
+
+**What a change costs.** Some changes are saved at once, others retrain the model:
+
+| You change | What happens |
+|------------|--------------|
+| The model name or display settings | Saved at once |
+| Items to train | Only new items are trained |
+| Anything else: horizon, training period, method, fields, aggregation, limits | The whole model is retrained |
+
+Before retraining, Trendz asks for confirmation and offers to apply the changes to a copy instead, so you can try
+a change without touching a model that is in use.
+
+## Advanced settings in the wizard
+
+The last step of the wizard has an **Advanced settings** button. It opens an optional step with two cards:
+
+- **Prediction model:** the algorithm. **Auto** is the default and fits most data. **ARIMA** adds its **p**,
+  **d**, and **q** fields.
+- **Forecast bounds:** **Clamp forecast to a range**, with **Min** and **Max**.
+
+Both can be changed later on the Properties tab.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-wizard-advanced.webp',
+    alt: 'Advanced settings step of the wizard with the Prediction model and Forecast bounds cards',
+    caption: 'The Advanced settings step.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-wizard-model.webp',
+    alt: 'Prediction model card of the wizard highlighted, with Auto selected by default',
+    caption: 'Prediction model.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-wizard-arima.webp',
+    alt: 'Wizard with ARIMA selected and its p, d, and q fields highlighted',
+    caption: 'ARIMA adds p, d, and q.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma2-wizard-bounds.webp',
+    alt: 'Forecast bounds card of the wizard highlighted, with Clamp forecast to a range on and the Min and Max fields',
+    caption: 'Forecast bounds.',
+  },
+]} />
+
+## Accuracy
+
+Accuracy shows how close the forecasts came to what really happened. Trendz measures it right after training:
+it hides the last part of the history, predicts it, and compares.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma-accuracy-holdout.svg',
+    alt: 'Training period split into a training part and a held-back window of one horizon: the model trains on the first part, predicts the held-back window, and is scored against what really happened',
+    caption: 'How the first accuracy score is measured.',
+  },
+]} />
+
+After that, every forecast is checked again once its time has passed, so the score keeps improving with each
+refresh.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma-accuracy.webp',
+    alt: 'Accuracy metrics tab with the score card, the snapshot selector, the chart, and the items table',
+    caption: 'The Accuracy metrics tab.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma-accuracy-score.webp',
+    alt: 'Model accuracy score card highlighted, showing 87 percent for the model and the metrics of the selected item',
+    caption: 'The score of the model and the selected item.',
+  },
+]} />
+
+**The score.** **Accuracy = 100 − sMAPE**, from 0 to 100 %. sMAPE is the average error in percent, so 90 %
+means the forecast was off by about 10 % on average. The tab shows four more numbers:
+
+| Metric | What it says |
+|--------|--------------|
+| **R²** | How much of the change in the data the model explains. Closer to 1 is better |
+| **Avg MAE** | The average error, in the units of the data |
+| **Avg RMSE** | Like MAE, but big misses count more |
+| **Avg sMAPE** | The average error in percent |
+
+**The Accuracy metrics tab.** On the left, the score of the model and of the selected item. Pick a
+**Snapshot**, one checked forecast, to draw it on the chart: **Telemetry** shows actual and predicted values,
+**Metrics** shows the error at each point. The table lists every item with its own score.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma-accuracy-snapshots.webp',
+    alt: 'Snapshots card highlighted with the list of checked forecast windows',
+    caption: 'Pick a snapshot.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma-accuracy-metrics.webp',
+    alt: 'Accuracy chart with the Metrics toggle active and the error drawn per point',
+    caption: 'Metrics: where the error came from.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ma-accuracy-items.webp',
+    alt: 'Accuracy items table highlighted, listing ten sites with their accuracy and metrics',
+    caption: 'The score of every item.',
+  },
+]} />
+
+**No accuracy yet?** An item needs at least twice the prediction horizon of history: one part to learn from and
+one to check. A device with less still forecasts, and gets a score once enough history arrives.
+
+**Improve accuracy:**
+
+- Give the model more history.
+- Use a longer grouping interval, for example hours instead of minutes.
+- Shorten the prediction horizon.
+- Add a field that explains the predicted one.
+- Go back to **Auto** if you picked a method by hand.
+- Turn on **Scheduled retrain**, so the model keeps up with the device.
+
+## Prediction models
+
+The prediction model is the algorithm that learns from the history and makes the forecast. Pick it in the
+wizard's Advanced settings or on the Properties tab.
+
+### Built-in models
+
+| Model | Best for |
+|-------|----------|
+| **Auto** | Most data. Trains Linear regression, Fourier, ARIMA, and Prophet on each device and keeps the most accurate one |
+| **Prophet** | Data with daily, weekly, or yearly patterns and a trend. Handles gaps well |
+| **ARIMA** | A series that follows its own recent past, with trends. **p**, **d**, and **q** set the autoregressive, differencing, and moving-average orders; 1, 1, 1 is a safe start |
+| **Linear regression** | A steady rise or fall, like a filter clogging or a battery draining |
+| **Fourier** | Clean repeating cycles, like a machine that runs the same shifts every day |
+
+Prophet, ARIMA, and custom models run in the
+<DocLink product={props.product} path="installation/python-executor-configuration">Python Executor</DocLink>, a
+separate service. Linear regression and Fourier run inside Trendz.
+
+### Custom models
+
+Use a custom model when the built-in models do not fit your data. You write the model in Python, with any
+library, and Trendz feeds it the data, stores what it learned, and publishes its forecast, just like a built-in
+model.
+
+Select **Custom** as the method and click **Edit script**. **Restore Template** fills the editor with an empty
+model.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma-script.webp',
+    alt: 'Custom Model script editor with the template class and the Restore Template button',
+    caption: 'The script editor.',
+  },
+]} />
+
+The script defines a class named `CustomModel` that extends `IModel`. Trendz provides `IModel`: do not import it,
+and do not rename the class. Trendz calls the methods in this order:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ma-custom-lifecycle.svg',
+    alt: 'Order of calls: a build or retrain calls init_state, train, predict, save_state; a refresh calls load_state, partial_fit, predict, save_state',
+    caption: 'The order of calls on a build and on a refresh.',
+  },
+]} />
+
+| Method | Called | Purpose |
+|--------|--------|---------|
+| `init_state()` | Before a build or retrain | Reset the model |
+| `train(data, additionalData)` | On a build or retrain | Learn from the whole training period |
+| `partial_fit(data, additionalData)` | On a refresh | Learn from the new readings only |
+| `predict(timestamps, additionalData)` | After every train or partial fit | Return one value per timestamp |
+| `save_state(file_path)` | At the end of every run | Write what the model learned to the file |
+| `load_state(file_path)` | At the start of a refresh | Read it back |
+| `name()` | For logs | Return a name for the model |
+
+Everything the model knows must be saved in `save_state` and read in `load_state`. Nothing else is kept between
+runs.
+
+**Input and output.** `data` is a list of `[timestamp, value]` pairs, oldest first, one per grouping interval.
+Timestamps are in milliseconds.
+
+```python
+data = [[1719792000000, 412.5], [1719795600000, 398.1], [1719799200000, 405.7]]
+```
+
+`additionalData` holds the additional fields, keyed `telemetry_<field id>`, in the same format. It is empty when
+the model has none.
+
+```python
+additionalData = {'telemetry_4f1c2a90_...': [[1719792000000, 21.4], [1719795600000, 20.9]]}
+```
+
+`predict` receives the timestamps to forecast and returns one value for each:
+
+```python
+def predict(self, timestamps, additionalData=None):
+    return [self.level for ts in timestamps]
+```
+
+**Example.** A complete model: the average value for each hour of the day, over the last 30 days.
+
+```python maxLines=30 collapsible
+import json
+
+import numpy as np
+
+
+class CustomModel(IModel):
+    """Average value per hour of day, over a rolling 30-day buffer."""
+
+    BUFFER_POINTS = 24 * 30
+
+    def __init__(self):
+        self._buffer = []
+        self._profile = {}
+
+    def init_state(self):
+        self._buffer = []
+        self._profile = {}
+
+    def train(self, data, additionalData=None):
+        self._buffer = [list(point) for point in data][-self.BUFFER_POINTS:]
+        self._fit()
+
+    def partial_fit(self, data, additionalData=None):
+        known = {int(point[0]) for point in self._buffer}
+        fresh = [list(point) for point in data if int(point[0]) not in known]
+        self._buffer = sorted(self._buffer + fresh, key=lambda point: point[0])[-self.BUFFER_POINTS:]
+        self._fit()
+
+    def predict(self, timestamps, additionalData=None):
+        fallback = float(np.mean([point[1] for point in self._buffer])) if self._buffer else 0.0
+        return [self._profile.get(self._hour(ts), fallback) for ts in timestamps]
+
+    def save_state(self, file_path):
+        state = {'buffer': self._buffer, 'profile': {str(h): v for h, v in self._profile.items()}}
+        with open(file_path, 'w') as f:
+            json.dump(state, f)
+
+    def load_state(self, file_path):
+        with open(file_path) as f:
+            state = json.load(f)
+        self._buffer = state['buffer']
+        self._profile = {int(h): v for h, v in state['profile'].items()}
+
+    def name(self):
+        return 'hour-of-day-mean'
+
+    def _fit(self):
+        by_hour = {}
+        for ts, value in self._buffer:
+            by_hour.setdefault(self._hour(ts), []).append(value)
+        self._profile = {hour: float(np.mean(values)) for hour, values in by_hour.items()}
+
+    @staticmethod
+    def _hour(ts):
+        return int(ts // 3600000) % 24
+```
+
+**Packages.** The Python Executor includes `numpy`, `pandas`, `scikit-learn`, `statsmodels`, `matplotlib`,
+`prophet`, `xgboost`, and `requests`. To add others to a self-hosted executor, see
+<DocLink product={props.product} path="installation/python-executor-configuration#add-custom-python-libraries">Add custom Python libraries</DocLink>.
+
+## Where to go next
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'prediction/monitoring',
+    title: 'Monitoring & alarms',
+    description: 'Refresh and retrain on a schedule, save forecasts to ThingsBoard, and raise alarms.',
+    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/forecast',
+    title: 'Prediction intents',
+    description: 'Forecast, Time to Threshold, Period Total, and Hit Target, with their own settings.',
+    icon: '/src/assets/images/trendz/prediction/icon-forecast.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'prediction/visualization',
+    title: 'Show on dashboards',
+    description: 'Chart history and forecast together in Trendz views and ThingsBoard dashboards.',
+    icon: '/src/assets/images/trendz/prediction/icon-dashboard.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />

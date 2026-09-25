@@ -1,0 +1,545 @@
+import ImageGallery from '@components/ImageGallery.astro';
+import DocLink from '@components/DocLink.astro';
+import InstallationCardGrid from '@components/InstallationCardGrid.astro';
+import { Aside } from '@astrojs/starlight/components';
+
+**Time to Threshold** answers the question a plain forecast leaves open: when. The model forecasts the metric the
+same way a <DocLink product={props.product} path="prediction/intents/forecast">Forecast</DocLink> model does, then
+reads that forecast with event rules. The moment the forecast first satisfies a rule becomes a predicted event
+with a countdown, a ThingsBoard alarm whose severity grows as the moment approaches, and a telemetry key you can
+put on a dashboard.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-result.webp',
+    alt: 'Result tab of a Time to Threshold model with the Next event card, the chart with the threshold line and the event marker, and the items table sorted by time to event',
+    caption: 'Ten retail sites against a 760 kWh peak: site-energy-006 crosses it in about 20 hours.',
+  },
+]} />
+
+## When to use it
+
+Use Time to Threshold when you need to know when something happens, not only what the value will be.
+
+| Use case | What Time to Threshold predicts | What you do with it |
+|----------|---------------------------------|---------------------|
+| **Refill fuel tanks** | When the fuel level of each generator tank drops below its reserve | Send the truck before a tank reaches the reserve |
+| **Avoid a peak charge** | When the load of each site goes above the contracted 600 kW | Move heavy jobs out of the hours before the crossing |
+| **Replace filters in time** | When the pressure drop across each air filter goes above its limit | Order and replace the filter before the airflow suffers |
+
+Events are searched only inside the forecast, so the prediction horizon is also how far ahead a crossing can be
+found. If you need the value itself rather than the moment, use
+<DocLink product={props.product} path="prediction/intents/forecast">Forecast</DocLink>. For a total over a period,
+use <DocLink product={props.product} path="prediction/intents/period-total">Period Total</DocLink>, and for a goal
+to reach, <DocLink product={props.product} path="prediction/intents/hit-target">Hit Target</DocLink>.
+
+## How to create a model
+
+### Step 1: Open the wizard
+
+Two entry points are available on the Prediction models page:
+
+- **Create model** — button in the top-right corner, visible on both tabs.
+- **+ Create** — inline button on any profile row of the Profile coverage table. Opens the wizard with that
+  profile pre-selected.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s1-create.webp',
+    alt: 'Prediction models Summary tab with the Create model button highlighted in the top-right corner',
+    caption: '"Create model" in the top-right corner — reachable from both tabs.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s1-create-inline.webp',
+    alt: 'Profile coverage table with the + Create button highlighted on a profile row',
+    caption: '"+ Create" on a profile row — opens the wizard with that profile already selected.',
+  },
+]} />
+
+The wizard opens on **What do you want to predict?**:
+
+- Select the **Time to Threshold** card (1).
+- Click **Next** (2).
+- The intent decides what the model reports and cannot be changed later.
+- The other three intents are described in
+  <DocLink product={props.product} path="prediction/intents/forecast">Forecast</DocLink>,
+  <DocLink product={props.product} path="prediction/intents/period-total">Period Total</DocLink>, and
+  <DocLink product={props.product} path="prediction/intents/hit-target">Hit Target</DocLink>.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s1-intent.webp',
+    alt: 'Select intent step of the wizard with the Time to Threshold card and the Next button highlighted',
+    caption: 'Select <b>Time to Threshold</b> (1) and click <b>Next</b> (2).',
+  },
+]} />
+
+### Step 2: Configure inputs
+
+The **Inputs configuration** step defines the items the model trains on and the metric the threshold is checked
+against.
+
+**Entity selection** — select the entity type and the profile to predict:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-entity-type.webp',
+    alt: 'Inputs configuration step with the entity type dropdown open showing Device profiles and Asset profiles',
+    caption: 'Choose Device profiles or Asset profiles as the entity type.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-profile.webp',
+    alt: 'Inputs configuration step with the profile dropdown open listing every profile and its item count',
+    caption: 'Select the profile. The list shows every profile of the chosen entity type, with how many items it holds.',
+  },
+]} />
+
+**Item selection** — choose which items of the profile train the model:
+
+| Mode | Behavior |
+|------|----------|
+| **All items** | Includes every item in the profile, including devices added to it later. |
+| **Manual selection** | Pick specific items from a searchable list. |
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-items-mode.webp',
+    alt: 'Item scope dropdown open showing All items and Manual selection',
+    caption: 'Choose between All items and Manual selection.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-items-all.webp',
+    alt: 'Inputs configuration step with All items selected and ten items included',
+    caption: '"All items" — every item of the profile is included automatically.',
+  },
+]} />
+
+**Predicted metric** — pick the telemetry key to forecast and the aggregation applied to it during training. The
+rule in step 4 is checked against this metric:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-aggregation.webp',
+    alt: 'Aggregation dropdown open showing AVG, SUM, MIN, and MAX',
+    caption: 'Pick the aggregation applied during training.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-telemetry.webp',
+    alt: 'Telemetry key dropdown open listing the numeric keys of the profile',
+    caption: 'Pick the telemetry key the threshold is read on.',
+  },
+]} />
+
+**Data Readiness** — grades the choice as you go: items selected, the predicted metric, how many telemetry points
+they hold, and the average spacing between them.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s2-readiness.webp',
+    alt: 'Data Readiness panel rated Excellent with ten devices, the predicted metric, telemetry points, and average spacing',
+    caption: 'Data Readiness rates the inputs before you continue.',
+  },
+]} />
+
+### Step 3: Configure the forecast
+
+**Prediction horizon** — choose how far ahead the model predicts. This is also how far ahead a crossing can be
+found: an item whose forecast never meets the condition inside the horizon has no event:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s3-horizon.webp',
+    alt: 'Prediction horizon with the Next 7 days preset selected and the resolved date range below the chips',
+    caption: 'The horizon, resolved into concrete dates under the chips.',
+  },
+]} />
+
+**Training period** — choose how much history the model learns from. A ratio below three horizons of history is
+graded as weak:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s3-training.webp',
+    alt: 'Configure forecast step with the training period chips and the resolved range highlighted',
+    caption: 'The training period, with the range it resolves to underneath.',
+  },
+]} />
+
+**Prediction granularity** — pick the length of one bucket. It also sets how precisely a crossing can be timed:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s3-granularity.webp',
+    alt: 'Configure forecast step with the granularity cards 1h, 3h, 6h, 12h, and 1d highlighted',
+    caption: 'One bucket, from one hour to one day.',
+  },
+]} />
+
+### Step 4: Define the threshold
+
+The fourth step creates the first event rule.
+
+<Aside type="tip">
+Not sure what to specify? Leave the step empty and build the model without it. Rules can be added at any time in
+[Event rules](#event-rules) on the Result tab.
+</Aside>
+
+**Rule name** — what the event is called on the Result tab and in the Events tab.
+
+**Threshold condition** — what the countdown counts down to:
+
+| Mode | Behavior |
+|------|----------|
+| **Simple** | One comparison: **goes above** or **drops below** a **Value**, or an **Attribute** read per item. |
+| **Advanced** | Several comparisons combined with AND or OR. |
+| **From alarm rule** | Reuses one severity of an existing ThingsBoard alarm rule. |
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s4-modes.webp',
+    alt: 'Threshold condition with the Simple, Advanced, and From alarm rule modes highlighted',
+    caption: 'Three ways to write the condition.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s4-condition.webp',
+    alt: 'Define the threshold step with the rule name Peak load and a Simple condition of goes above 600',
+    caption: 'Rule "Peak load": the event starts when the forecast goes above 600.',
+  },
+]} />
+
+Alarms and telemetry for the rule are switched on afterwards, in [Event rules](#event-rules).
+
+### Step 5: Build the model
+
+**Data Readiness** — read the panel before you train:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s4-readiness.webp',
+    alt: 'Define the threshold step with the Data Readiness panel highlighted, rated Excellent',
+    caption: 'Readiness also names the method the model will use.',
+  },
+]} />
+
+**Build model** — trains one model per item and opens the Result tab when the run finishes:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-s5-build.webp',
+    alt: 'Define the threshold step with the Build model button highlighted',
+    caption: 'Click "Build model" to train.',
+  },
+]} />
+
+## Time to Threshold result page
+
+The Result tab shows the soonest predicted event of one item at a time. Pick the item in the table below the chart;
+the cards on the right show the monitoring settings and the data status of the model.
+
+### Next event card
+
+The card on the left shows the soonest event of the selected item for the selected rule. The selector at its top
+switches rules when the model has several.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-next-event.webp',
+    alt: 'Next event card showing the time to event, the threshold, the predicted value, the crossing time, and the alarm severity',
+    caption: 'The next crossing of site-energy-006 is about 20 hours away, so its alarm is MAJOR.',
+  },
+]} />
+
+| Field | Meaning |
+|-------|---------|
+| **Time to event** | The countdown to the start of the event, **Now** while it is under way, or **Ended** once the predicted window has passed |
+| **Threshold** | The condition of the rule, such as **> 760** |
+| **Predicted value** | The forecast value at the crossing |
+| **Crossing at** | The predicted time of the crossing |
+| **Alarm** | The severity raised and since when, or **No alarm** |
+
+### Threshold chart
+
+The chart shows the forecast of the selected item against the rule: the **Threshold** as a dashed line and the
+**Event** as a marker at the predicted crossing.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-chart.webp',
+    alt: 'Chart of a Time to Threshold model with the measured history, the forecast, the threshold line, and the event marker',
+    caption: 'The forecast against the threshold, with the predicted crossing marked.',
+  },
+]} />
+
+### Items table
+
+The table under the chart is sorted by the soonest event, so the items that need attention are at the top. Select
+a row to switch the card and the chart to that item.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-items.webp',
+    alt: 'Items table of a Time to Threshold model sorted by time to event with severities per site',
+    caption: 'Sorted by the soonest crossing. Only site-energy-006 is predicted to reach 760.',
+  },
+]} />
+
+| Column | Meaning |
+|--------|---------|
+| **Item** | The device or asset name |
+| **Time to event** | The countdown, **Now**, or a dash when no crossing is predicted |
+| **Severity** | The severity of the raised alarm, or a dash |
+| **Last refresh**, **Refresh status**, **Training** | The item's refresh and training state |
+
+### Item actions
+
+The **⋯** button at the end of each row opens the actions for that one item:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-item-menu.webp',
+    alt: 'Items table of a Time to Threshold model with the three-dot button at the end of the site-energy-006 row highlighted',
+    caption: 'Click <b>⋯</b> at the end of a row to open its actions.',
+  },
+]} />
+
+| Action | What it does | When to use it |
+|--------|--------------|----------------|
+| **Refresh** | Fits the item's model on the readings that arrived since the last refresh, predicts again, and checks the rules | The countdown is out of date and you do not want to wait for the next scheduled refresh |
+| **Retrain** | Trains the item's model again from scratch on the whole training period | The item's behavior has changed, or its training failed |
+| **Delete** | Removes the item, its events, and its forecast from the model. The device or asset in ThingsBoard stays as it is | The item should not be predicted, for example a test device or a closed site |
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-item-refresh.webp',
+    alt: 'Items table with the row menu of site-energy-006 open and Refresh highlighted',
+    caption: '<b>Refresh</b> updates the countdown of one item with its newest readings.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-item-retrain.webp',
+    alt: 'Items table with the row menu of site-energy-006 open and Retrain highlighted',
+    caption: '<b>Retrain</b> trains the item again from its whole training period.',
+  },
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-item-delete.webp',
+    alt: 'Items table with the row menu of site-energy-006 open and Delete highlighted',
+    caption: '<b>Delete</b> takes the item out of the model.',
+  },
+]} />
+
+### Continuous monitoring
+
+The **Continuous monitoring** card shows the monitoring status of this model. What each setting does and how to
+configure it is described in
+<DocLink product={props.product} path="prediction/monitoring#set-up-continuous-monitoring">Monitoring & Alarms</DocLink>.
+Countdowns and alarms move only when the forecast is refreshed, so keep **Periodic refresh** on for a model that
+raises alarms.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-monitoring-card.webp',
+    alt: 'Result tab of a Time to Threshold model with the Continuous monitoring card highlighted, showing Periodic refresh, Save telemetry, Alarm creation, and Scheduled retrain',
+    caption: 'This model refreshes every hour and raises alarms.',
+  },
+]} />
+
+### Data status
+
+The **Data status** card shows the selected item and how long ago it was last refreshed. Its buttons run the same
+work as the row menu, for more items at once:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-data-status.webp',
+    alt: 'Result tab of a Time to Threshold model with the Data status card highlighted, showing site-energy-006, its last refresh, and the Refresh item, Refresh all, and Retrain all failed buttons',
+    caption: 'Data status of the selected item, with buttons for one item or the whole model.',
+  },
+]} />
+
+- **Refresh item** refreshes the selected item.
+- **Refresh all** refreshes every item of the model.
+- **Retrain all failed** trains again every item whose training failed.
+
+## Event rules
+
+An event rule turns the forecast into an event. On every refresh, Trendz checks the forecast against the rule's
+condition. The first moment the forecast meets the condition is the start of the event, and the moment it stops
+meeting it is the end. The time from now to the start is the **time to event**.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-event.svg',
+    alt: 'Diagram: the measured history up to Now, the dashed forecast rising above the threshold line and falling back, the shaded event between the two crossings, and the time to event from Now to the event start',
+    caption: 'Events are searched only inside the prediction horizon.',
+  },
+]} />
+
+A model can have several rules, such as a warning level and a critical level on the same metric. Each rule can be
+switched off without deleting it.
+
+### Open the rule editor
+
+Click **Manage rules** under the Next event card:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-manage-rules.webp',
+    alt: 'Result tab of a Time to Threshold model with the Manage rules button highlighted',
+    caption: '<b>Manage rules</b> opens the rule editor.',
+  },
+]} />
+
+The editor lists the rules on the left and the selected rule on the right. A model built without a rule is
+completed here: add the rule and the next refresh checks the existing forecast against it. Nothing is retrained.
+
+### Trigger condition
+
+The trigger condition is what the countdown counts down to:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-rules-condition.webp',
+    alt: 'Manage rules dialog with the trigger condition highlighted: Simple mode, goes above, Value, 760, and the condition preview',
+    caption: 'Rule "Peak load": the event starts when the forecast goes above 760.',
+  },
+]} />
+
+| Mode | Behavior |
+|------|----------|
+| **Simple** | One comparison: **goes above** or **drops below** a **Value**, or an **Attribute** read per item |
+| **Advanced** | Several comparisons combined with AND or OR |
+| **From alarm rule** | Reuses one severity of an existing ThingsBoard alarm rule |
+
+### Business entity field and telemetry
+
+Two actions make the time to event available outside the Result tab:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-rules-actions.webp',
+    alt: 'Manage rules dialog with the Business entity field and Telemetry saving actions highlighted, and the telemetry key peak_load_eta',
+    caption: 'Telemetry saving writes the countdown to each item under peak_load_eta.',
+  },
+]} />
+
+| Action | What it does |
+|--------|--------------|
+| **Business entity field** | Creates a field on the business entity with the time to event, for Trendz views |
+| **Telemetry saving** | Writes the time to event to each item under the **Telemetry key** with the `_EPE_` prefix. An event under way is written as `0`, an item with no crossing as `-1` |
+
+### Alarm creation
+
+**Alarm creation** raises a ThingsBoard alarm of the **Alarm type** while an event is predicted. The type must be
+unique within the profile, because ThingsBoard keeps one active alarm per item and type.
+
+**Severity thresholds** set how close the event must be for each severity. As the event gets closer, the alarm
+steps up to the most severe level whose threshold it has reached:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-severity.svg',
+    alt: 'Diagram: a timeline toward the event start with No alarm, then WARNING from 3 days before, MAJOR from 1 day before, and CRITICAL from 6 hours before',
+    caption: 'The thresholds of the demo model: WARNING 3 days, MAJOR 1 day, CRITICAL 6 hours.',
+  },
+]} />
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-rules-severity.webp',
+    alt: 'Manage rules dialog with Alarm creation highlighted: alarm type Peak load predicted and severity thresholds WARNING 3 days, MINOR off, MAJOR 1 day, CRITICAL 6 hours',
+    caption: 'Alarm creation with its alarm type and the severity thresholds.',
+  },
+]} />
+
+How a predicted alarm is raised, updated, and cleared is described in
+<DocLink product={props.product} path="prediction/monitoring#alarm-lifecycle">Monitoring & Alarms</DocLink>.
+
+## Events tab
+
+The **Events** tab lists every predicted event of the model, across all items and rules. The chart shows the
+selected event on the forecast.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-events-tab.webp',
+    alt: 'Events tab with the chart of the selected event and a table of predicted events with their alarms',
+    caption: 'Every predicted event of the model in one list.',
+  },
+]} />
+
+| Column | Meaning |
+|--------|---------|
+| **Item** | The device or asset name |
+| **Rule** | The rule that found the event |
+| **Condition** | The condition of the rule |
+| **Event time** | The predicted start of the event |
+| **Time to event** | The countdown to the start |
+| **Alarm** | The severity of the raised alarm |
+| **Predicted on** | The time of the forecast that found the event |
+
+## Where to go next
+
+### Explore other intents
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'prediction/intents/forecast',
+    title: 'Forecast',
+    description: 'Predict the future values of a metric, hour by hour or day by day.',
+    icon: '/src/assets/images/trendz/prediction/icon-forecast.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/period-total',
+    title: 'Period Total',
+    description: 'Predict the total, peak, or average of a period, such as the energy of this month.',
+    icon: '/src/assets/images/trendz/prediction/icon-period.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/hit-target',
+    title: 'Hit Target',
+    description: 'Predict whether a goal is reached by the end of a period, and how far off it is.',
+    icon: '/src/assets/images/trendz/prediction/icon-target.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />
+
+### Go further with Time to Threshold
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'prediction/monitoring#set-up-continuous-monitoring',
+    title: 'Set up monitoring',
+    description: 'Refresh the forecast on a schedule so the countdowns and alarms stay current.',
+    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'prediction/monitoring#alarm-lifecycle',
+    title: 'Follow the alarm lifecycle',
+    description: 'How a predicted alarm is raised, updated, and cleared in ThingsBoard.',
+    icon: '/src/assets/images/trendz/vibration/icon-alarm.svg',
+    accent: '#dc2626',
+    hero: true,
+  },
+  {
+    path: 'prediction/models-and-accuracy#accuracy',
+    title: 'Check accuracy',
+    description: 'See how close past forecasts came to the measured values, and how to improve the score.',
+    icon: '/src/assets/images/trendz/prediction/icon-accuracy.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'prediction/visualization',
+    title: 'Show on dashboards',
+    description: 'Put the countdown on a Trendz view or a ThingsBoard dashboard.',
+    icon: '/src/assets/images/trendz/prediction/icon-dashboard.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />

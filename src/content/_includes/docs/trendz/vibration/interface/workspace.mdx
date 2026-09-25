@@ -1,0 +1,413 @@
+import { Aside } from '@astrojs/starlight/components';
+import DocLink from '@components/DocLink.astro';
+import ImageGallery from '@components/ImageGallery.astro';
+import InstallationCardGrid from '@components/InstallationCardGrid.astro';
+
+**Vibration Models** in the left menu holds every vibration model of the tenant. One model is bound to one device
+or asset profile: it reads the waveform telemetry of every machine under that profile and turns each sample it
+scans into stored results, from overall metrics and spectra to an ISO severity zone and the shaft or bearing
+pattern that fits best.
+
+## How it fits together
+
+1. The [Vibration Models list](#vibration-models-list) holds every model. Opening one leads to its
+   [model page](#model-page).
+2. The **Overview**, **Monitoring**, and **Analyzer** tabs read the results the model has stored. They show
+   nothing for a period that was never scanned.
+3. The [actions](#actions) scan samples into stored results: the newest ones, or a period you choose. Scheduled
+   scanning runs the same scan on its own.
+4. Every scan runs as an execution of the model's task, listed on the [Tasks tab](#tasks-tab).
+5. The **Properties** tab holds the configuration every scan follows.
+
+## Vibration Models list
+
+The list opens on every model of the tenant, newest first. **Create model** opens the wizard, described in
+<DocLink product={props.product} path='vibration/getting-started'>Getting Started</DocLink>.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list.webp',
+    alt: 'Vibration Models list with the search and profile filters, the quick filter chips, and the table of models',
+    caption: 'Vibration Models: every model, with what it reads and what it writes back.',
+  },
+]} />
+
+Each row in the table shows:
+
+| Column | Description |
+|--------|-------------|
+| **Name** | Model name and the profile it reads |
+| **Created** | When the model was created |
+| **Telemetry key** | The key that holds the waveform, with the axis count and the points per sample |
+| **Alarms** | Open alarms raised by this model's rules |
+| **Monitoring** | Whether scheduled scanning is enabled |
+| **Saved as telemetry** | Whether each scan writes the selected metrics back to ThingsBoard |
+| **Items** | Machines scanned, out of the machines the profile holds |
+
+### Filtering models
+
+**By profile.** The left select switches between **Device profiles** and **Asset profiles**, the right one picks
+a single profile. Every profile is listed with the number of items it holds:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-profiles.webp',
+    alt: 'Vibration Models list with the profile select open, listing every device profile with its item count',
+    caption: 'Profile filter: every profile, with how many items it holds.',
+  },
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-profile-selected.webp',
+    alt: 'Vibration Models list filtered to the Conveyor drives profile, showing one model',
+    caption: 'Selecting a profile leaves the models trained on it.',
+  },
+]} />
+
+**By schedule.** The chips under the toolbar narrow the list to models with or without scheduled scanning:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-chips.webp',
+    alt: 'Quick filter chips of the Vibration Models list: All, Monitoring on, and No monitoring',
+    caption: 'Filter chips: find the models that scan on a schedule, or the ones that do not.',
+  },
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-chips-selected.webp',
+    alt: 'Vibration Models list with the No monitoring chip selected',
+    caption: 'Selecting a chip filters the table instantly.',
+  },
+]} />
+
+| Chip | Shows |
+|------|-------|
+| **All** | Every model |
+| **Monitoring on** | Models with scheduled scanning |
+| **No monitoring** | Models that scan only when started by hand |
+
+**Search** matches the model name as you type, and combines with both filters.
+
+### Model detail panel
+
+Click any model row to describe it beside the table, without opening it:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-panel.webp',
+    alt: 'Detail panel of a selected vibration model with its tiles and the rows Monitoring, Saved as telemetry, Profile, Vibration telemetry, Points per second, Items scanned, Average samples per item, and Axes',
+    caption: 'The detail panel: what the model reads, and what it has stored.',
+  },
+]} />
+
+| Field | Description |
+|-------|-------------|
+| **Last scan** | How long ago a scan last ran |
+| **Items** | Machines the model covers, out of the machines in the profile |
+| **Monitoring**, **Saved as telemetry** | The same two flags as the columns |
+| **Profile** | The device or asset profile the model reads |
+| **Vibration telemetry** | The telemetry key, and the unit the signal is measured in |
+| **Points/s** | Points per second, from the model or read per machine from an attribute |
+| **Items scanned** | The period the stored results cover, from the earliest scanned sample to the latest, or to now while a schedule is running |
+| **Avg samples / item** | Stored samples divided by the machines that hold them |
+| **Axes** | How many axes the telemetry value holds |
+
+**Open model** goes to the model page, and **Scan more data** starts a scan over a period you choose. The pencil
+beside the panel title renames the model.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-panel-actions.webp',
+    alt: 'Detail panel actions Open model and Scan more data highlighted at the bottom of the panel',
+    caption: 'The panel actions: open the model, or scan a period of its history.',
+  },
+]} />
+
+### Renaming and deleting
+
+Click the **...** at the end of a row. **Rename** makes the name editable in the table, and **Delete** removes the
+model with everything it has computed, after a confirmation:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-list-actions.webp',
+    alt: 'Row menu of a vibration model open, offering Rename and Delete',
+    caption: 'The row menu: rename the model in place, or delete it with its results.',
+  },
+]} />
+
+## Model page
+
+The model page is where one model is read and managed:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-model-layout.webp',
+    alt: 'Header of the Conveyor drives vibration model page with the breadcrumb, the tabs Overview, Monitoring, Analyzer, Properties, and Tasks, and the buttons Scan latest data and More actions, numbered 1 to 3',
+    caption: 'The model page: (1) breadcrumb, (2) tabs, (3) actions.',
+  },
+]} />
+
+1. **Breadcrumb.** **Vibration Models** leads back to the list, followed by the model name.
+2. **Tabs.** Each tab shows one side of the model, described below.
+3. **Actions.** **Scan latest data** and **More actions** work on the whole model. They are described in [Actions](#actions).
+
+### Overview tab
+
+The verdict for each machine: its ISO zone, the shaft problem, and the bearing defect that fits best.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-overview.webp',
+    alt: 'Overview tab of the Conveyor drives vibration model with the machine verdict, metric trend, Monitoring card, and items table',
+    caption: 'The Overview tab.',
+  },
+]} />
+
+See <DocLink product={props.product} path='vibration/interface/overview-tab'>Overview tab</DocLink>.
+
+### Monitoring tab
+
+The model over time: the alarm state of each machine, its metric trends, and the alarms raised.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-monitoring-tab.webp',
+    alt: 'Monitoring tab of the Conveyor drives vibration model with the alarm state, metric tiles, trend chart, alarms card, and items table',
+    caption: 'The Monitoring tab.',
+  },
+]} />
+
+See <DocLink product={props.product} path='vibration/interface/monitoring-tab'>Monitoring tab</DocLink>.
+
+### Analyzer tab
+
+One stored sample in detail: its waveform, spectrum, and envelope spectrum.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-analyzer-tab.webp',
+    alt: 'Analyzer tab of the Conveyor drives vibration model with the time waveform of Conveyor 4E, the overlays card, and the sample navigator',
+    caption: 'The Analyzer tab.',
+  },
+]} />
+
+See <DocLink product={props.product} path='vibration/interface/analyzer-tab'>Analyzer tab</DocLink>.
+
+### Properties tab
+
+Everything the model is configured with: what it reads, how it scans, and the machine details.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-properties.webp',
+    alt: 'Properties tab of the Conveyor drives vibration model with the entity selection, vibration telemetry, scan settings, machine details, envelope band, and display units cards',
+    caption: 'The Properties tab.',
+  },
+]} />
+
+See <DocLink product={props.product} path='vibration/interface/properties-tab'>Properties tab</DocLink>.
+
+### Tasks tab
+
+A vibration model has one Trendz task, and every scan runs as an execution of it: the scheduled ones and those
+you start by hand. The **Tasks** tab shows that task, so you can check when each scan ran, whether it finished,
+and how long it took.
+
+<Aside>
+The tab stays disabled until the model has run its first task.
+</Aside>
+
+**Tasks list**
+
+The model's task, under **Vibration model tasks**.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/tasks-tab-list.webp',
+    alt: 'Tasks tab of the Conveyor drives vibration model with one scheduled task: Vibration analyze samples, created Sep 22, updated Sep 24, status Not active, job type Vibration Model, analyze samples',
+    caption: 'The scheduled scan task of the Conveyor drives model.',
+  },
+]} />
+
+| Column | Description |
+|--------|-------------|
+| **Name** | The task name: **Vibration analyze samples** and the model name |
+| **Created** | When the task was created |
+| **Updated** | When the task last changed |
+| **Status** | **RUNNING** while an execution is in progress, **NOT ACTIVE** between runs |
+| **Task type** | **Scheduled** while scheduled scanning is on, **Run Once** while it is off |
+| **Job Type** | Always **Vibration Model, analyze samples** |
+| **Actions** | The row menu |
+
+**Row menu**
+
+The **⋯** menu at the end of a row holds two actions:
+
+- **Details** opens the executions of the task. Clicking the row does the same.
+- **Go to Task** opens the task on the global **Tasks** page, in a new browser tab.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/tasks-tab-menu.webp',
+    alt: 'Row menu of the scan task open with Details and Go to Task',
+    caption: 'The row menu: <b>Details</b> and <b>Go to Task</b>.',
+  },
+]} />
+
+**Task executions**
+
+**Details** opens **Task Executions**: one row per scan, newest first.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/tasks-tab-details.webp',
+    alt: 'Task Executions dialog with three finished runs, six hours apart, each taking about a second',
+    caption: 'Three scheduled scans, six hours apart, each finished in about a second.',
+  },
+]} />
+
+| Column | Description |
+|--------|-------------|
+| **Started time** | When the run started |
+| **Duration** | How long it took |
+| **Finished Time** | When it ended |
+| **Status** | **CREATED**, **RUNNING**, **FINISHED**, **FAILED**, **CANCELED**, or **LOST** |
+| **Actions** | **Stop** cancels a run that is still going |
+
+Click a finished or failed row to open its result. A failed run shows the error that stopped it.
+
+## Actions
+
+The header of the model page carries the actions that work on the whole model: **Scan latest data**, and under
+**More actions**, **Duplicate**, **Scan more data**, and **Monitoring**. Everything the Overview, Monitoring, and
+Analyzer tabs show comes from stored scan results, so the way to fill a gap is always a scan over the period the
+gap is in.
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-actions-header.webp',
+    alt: 'Model page header with the Scan latest data and More actions buttons highlighted',
+    caption: 'The model actions: <b>Scan latest data</b> and <b>More actions</b>.',
+  },
+]} />
+
+### Scan latest data
+
+**Scan latest data** reads the samples that arrived since the last scan:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-scan-latest.webp',
+    alt: 'Scan latest data button highlighted in the model page header',
+    caption: 'Scan latest data continues every machine from its own newest stored sample.',
+  },
+]} />
+
+- Each machine resumes from its newest stored sample and is read up to now, so nothing is computed twice.
+- It covers the machines that were scanned at least once. New machines are added with **Scan more data**.
+- This is the same operation the schedule runs, started by hand.
+
+### Scan more data
+
+**More actions** → **Scan more data** reads a period you choose, rather than only the newest samples:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-actions-scan-more.webp',
+    alt: 'More actions menu open in the model page header with Scan more data highlighted',
+    caption: '<b>Scan more data</b> is in the <b>More actions</b> menu.',
+  },
+  {
+    src: '/src/assets/images/trendz/vibration/interface-scan-more.webp',
+    alt: 'Scan more data dialog with the period chips All history, Last 180 days, Last 90 days, and Last 30 days, a date picker, and the scope tabs',
+    caption: 'Pick the period to scan.',
+  },
+  {
+    src: '/src/assets/images/trendz/vibration/interface-scan-more-scope.webp',
+    alt: 'Scope tabs of the Scan more data dialog: All in profile, Scanned items, and Specific',
+    caption: 'Scope decides which machines the period is read for.',
+  },
+]} />
+
+- Pick the period from the chips, **All history**, **Last 180 days**, **Last 90 days**, or **Last 30 days**, or
+  open the date picker for a custom range.
+- **Scope** decides which machines: **All in profile** also pulls in machines the model has not scanned yet,
+  **Scanned items** covers the ones it already holds, and **Specific** covers the ones you list.
+- The run restates the window: samples already stored inside it are overwritten, and results the rescan did not
+  rewrite are dropped. Use it to fill history, to redo a period after fixing the data, or to add a machine.
+
+### Duplicate
+
+**More actions** → **Duplicate** creates a copy of the model and opens it in a new browser tab:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-actions-duplicate.webp',
+    alt: 'More actions menu open in the model page header with Duplicate highlighted',
+    caption: '<b>Duplicate</b> copies the model into a new one.',
+  },
+]} />
+
+- The copy carries the whole configuration, including bearings, machine details, and the envelope band, and the
+  alarm rules. Edits made on the Properties tab and not yet saved are carried over too.
+- Scheduled scanning, saving metrics as telemetry, and raising alarms are switched off on the copy, so the two
+  models do not write the same keys. Turn them on in the copy's **Monitoring** settings when you need them.
+- Scanned samples, spectra, and raised alarms are not copied: the copy starts its own scan.
+- Use it to try a different configuration, such as another shaft speed or envelope band, without touching the
+  model that is running.
+
+### Monitoring
+
+**More actions** → **Monitoring** opens the **Monitoring configuration** dialog, the same one as **Configure** on
+the <DocLink product={props.product} path='vibration/interface/overview-tab#monitoring-card'>Monitoring card</DocLink>:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/vibration/interface-actions-monitoring.webp',
+    alt: 'More actions menu open in the model page header with Monitoring highlighted',
+    caption: '<b>Monitoring</b> opens the monitoring configuration.',
+  },
+  {
+    src: '/src/assets/images/trendz/vibration/interface-monitoring-configure.webp',
+    alt: 'Monitoring configuration dialog with switches for scheduled scanning, save metrics as telemetry, and raise alarms',
+    caption: 'One switch each for scheduled scanning, saving metrics, and raising alarms.',
+  },
+]} />
+
+Scheduled scanning, the metrics written back to ThingsBoard, and the alarm rules are described in
+<DocLink product={props.product} path='vibration/monitoring'>Monitoring & Alarms</DocLink>.
+
+## Explore the tabs in detail
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'vibration/interface/overview-tab',
+    title: 'Overview tab',
+    description: 'Read the verdict for each machine: its ISO zone, the shaft problem, and the bearing defect that fits best.',
+    icon: '/src/assets/images/trendz/vibration/icon-gauge.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+  {
+    path: 'vibration/interface/monitoring-tab',
+    title: 'Monitoring tab',
+    description: 'Follow the model over time: alarm state, metric trends, and the alarms raised.',
+    icon: '/src/assets/images/trendz/vibration/icon-alarm.svg',
+    accent: '#E21C46',
+    hero: true,
+  },
+  {
+    path: 'vibration/interface/analyzer-tab',
+    title: 'Analyzer tab',
+    description: 'Open one sample: its waveform, spectrum, and envelope spectrum with fault frequencies marked.',
+    icon: '/src/assets/images/trendz/vibration/icon-spectrum.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'vibration/interface/properties-tab',
+    title: 'Properties tab',
+    description: 'Change what the model reads and how, and see which changes need a rescan.',
+    icon: '/src/assets/images/trendz/vibration/icon-wrench.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+]} />

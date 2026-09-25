@@ -6,7 +6,6 @@ import {
 	familySlug as getFamilySlug,
 } from '~/models/trendz-releases-table';
 
-const upgradeBase = '/docs/trendz/installation/upgrade-instructions';
 const releasesBase = '/docs/trendz/releases/releases-table';
 
 type Status = 'active-lts' | 'maintenance-lts' | 'standard' | 'eol';
@@ -97,7 +96,6 @@ const STATUS_LABEL: Record<Status, string> = {
 				<th>End of Life</th>
 				<th>TB Compatible</th>
 				<th>Release Notes &amp; Highlights</th>
-				<th>Instructions</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -136,14 +134,6 @@ const STATUS_LABEL: Record<Status, string> = {
 									<path d="M17 7l-10 10" />
 									<path d="M8 7l9 0l0 9" />
 								</svg>
-							</a>
-						</td>
-						<td class="upgrade-col">
-							<a
-								href={`${upgradeBase}/?version=${getFamilySlug(f.family)}`}
-								class="upgrade-btn"
-							>
-								Upgrade
 							</a>
 						</td>
 					</tr>
@@ -322,30 +312,6 @@ const STATUS_LABEL: Record<Status, string> = {
 
 	.highlights-link:hover {
 		text-decoration: underline;
-	}
-
-	.upgrade-col {
-		width: 1px;
-		white-space: nowrap;
-	}
-
-	.upgrade-btn {
-		display: inline-block;
-		padding: 0.25em 0.75em;
-		border: 1px solid var(--sl-color-text-accent);
-		border-radius: 4px;
-		color: var(--sl-color-text-accent);
-		font-size: 0.8rem;
-		font-weight: 600;
-		text-decoration: none;
-		transition:
-			background 0.15s,
-			color 0.15s;
-	}
-
-	.upgrade-btn:hover {
-		background: var(--sl-color-text-accent);
-		color: var(--sl-color-white);
 	}
 
 	/* Legend */

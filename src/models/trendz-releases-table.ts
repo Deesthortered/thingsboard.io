@@ -48,6 +48,16 @@ export function patchSlug(version: string, date: string): string {
 /** Trendz release families, newest first */
 export const TRENDZ_RELEASE_FAMILIES: TrendzReleaseFamily[] = [
 	{
+		family: '1.16',
+		lts: true,
+		releaseDate: 'Sep 30 2026',
+		latestPatch: 'v1.16.0',
+		latestPatchDate: 'Sep 30 2026',
+		highlights: 'Prediction Intents, Vibration Analysis',
+		tbVersion: '4.3',
+		patches: [{ version: 'v1.16.0', date: 'Sep 30, 2026' }],
+	},
+	{
 		family: '1.15',
 		lts: true,
 		releaseDate: 'Jan 20 2026',

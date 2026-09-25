@@ -544,7 +544,7 @@ export const products: ProductData[] = [
 			[
 				{
 					title: 'Predict failures and forecast utilization',
-					href: '/docs/trendz/prediction/',
+					href: '/docs/trendz/prediction/overview/',
 					description:
 						'Plan and optimize operations with insights into future events and system behavior.',
 				},
