@@ -291,39 +291,9 @@ next run that finds enough.
 
 ### Item actions
 
-The **⋯** button at the end of each row opens the actions for that one item:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/forecast-item-menu.webp',
-    alt: 'Items table with the three-dot button at the end of the site-energy-003 row highlighted',
-    caption: 'Click <b>⋯</b> at the end of a row to open its actions.',
-  },
-]} />
-
-| Action | What it does | When to use it |
-|--------|--------------|----------------|
-| **Refresh** | Fits the item's model on the readings that arrived since the last refresh and predicts the horizon again | The forecast is out of date and you do not want to wait for the next scheduled refresh |
-| **Retrain** | Trains the item's model again from scratch on the whole training period | The item's behavior has changed, or its training failed |
-| **Delete** | Removes the item and its forecast from the model. The device or asset in ThingsBoard stays as it is | The item should not be predicted, for example a test device or a closed site |
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/forecast-item-refresh.webp',
-    alt: 'Items table with the row menu of site-energy-003 open and Refresh highlighted',
-    caption: '<b>Refresh</b> updates the forecast of one item with its newest readings.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/forecast-item-retrain.webp',
-    alt: 'Items table with the row menu of site-energy-003 open and Retrain highlighted',
-    caption: '<b>Retrain</b> trains the item again from its whole training period.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/forecast-item-delete.webp',
-    alt: 'Items table with the row menu of site-energy-003 open and Delete highlighted',
-    caption: '<b>Delete</b> takes the item out of the model.',
-  },
-]} />
+The **⋯** button at the end of each item row — **Refresh**, **Retrain**, and **Delete** for one item — works the
+same for every intent. See
+<DocLink product={props.product} path="prediction/interface#item-actions">Interface Overview</DocLink>.
 
 ### Continuous monitoring
 
@@ -341,20 +311,9 @@ configure it is described in
 
 ### Data status
 
-The **Data status** card shows the selected item and how long ago it was last refreshed. Its buttons run the same
-work as the row menu, for more items at once:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/forecast-data-status.webp',
-    alt: 'Result tab with the Data status card highlighted, showing site-energy-001, its last refresh, and the Refresh item, Refresh all, and Retrain all failed buttons',
-    caption: 'Data status of the selected item, with buttons for one item or the whole model.',
-  },
-]} />
-
-- **Refresh item** refreshes the selected item.
-- **Refresh all** refreshes every item of the model.
-- **Retrain all failed** trains again every item whose training failed.
+The **Data status** card and its **Refresh item**, **Refresh all**, and **Retrain all failed** buttons work the
+same for every intent. See
+<DocLink product={props.product} path="prediction/interface#data-status">Interface Overview</DocLink>.
 
 ## Where to go next
 
