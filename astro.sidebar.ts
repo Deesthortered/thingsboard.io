@@ -3728,7 +3728,6 @@ export const trendzSidebar: SidebarConfig = [
 					'docs/trendz/calculations/batch',
 					'docs/trendz/calculations/native',
 					'docs/trendz/calculations/save-to-thingsboard',
-					{ slug: 'docs/trendz/prediction/intents/time-to-threshold', label: 'Time to Threshold' },
 				],
 			},
 			{
