@@ -56,6 +56,11 @@ Go to **Vibration Models** in the left menu (1) and click **Create model** (2).
     alt: 'Vibration Models list with the Vibration Models icon in the left menu marked 1 and the Create model button marked 2',
     caption: 'Open Vibration Models (1), then click Create model (2).',
   },
+  {
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-open.webp',
+    alt: 'New vibration model wizard opened on the Scope step, with the steps Scope, Scan settings, Machine details, and Bearings at the top',
+    caption: 'The wizard opens on the Scope step.',
+  },
 ]} />
 
 ### Step 2. Choose the machines
@@ -123,46 +128,54 @@ Then click **Next** (2).
 
 ### Step 4. Set the sample rate
 
-**Points per second** is how many readings the sensor records each second. It sets the highest frequency Trendz
-can analyze, half of the value, as described in <DocLink product={props.product} path='vibration/basics#what-a-sample-is'>Vibration Analysis Basics</DocLink>. If it differs
-between machines, switch **Manual** to **From attribute** and pick the attribute that holds it.
+Tell Trendz how fast the sensor records, and how much history the first scan reads.
+
+**Points per second** is the sample rate: how many readings the sensor records each second. Type it in, for example
+**25600**. If it differs between machines, switch **Manual** to **From attribute** and pick the attribute that holds
+it on each machine. Why the sample rate matters is explained in
+<DocLink product={props.product} path='vibration/basics#what-a-sample-is'>Vibration Analysis Basics</DocLink>.
 
 <ImageGallery images={[
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-scan.webp',
-    alt: 'Scan settings step with points per second set manually to 25600 Hz marked 1, the scan period chips with Last 30 days selected marked 2, and the Next button marked 3',
-    caption: 'Enter points per second (1), pick the scan period (2), then click Next (3).',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-rate-manual.webp',
+    alt: 'Points per second field highlighted with Manual and 25600 Hz',
+    caption: 'Type points per second.',
   },
   {
     src: '/src/assets/images/trendz/vibration/getting-started-wizard-rate-source.webp',
     alt: 'Points per second source list open with Manual and From attribute',
-    caption: 'Enter the value by hand, or read it from an attribute.',
+    caption: 'Or switch to From attribute.',
   },
   {
     src: '/src/assets/images/trendz/vibration/getting-started-wizard-rate-attribute.webp',
     alt: 'Attribute list of Points per second open with the attributes of the Conveyor drives devices, among them sampleRate and sampleRateHz',
-    caption: 'From attribute: pick the attribute that holds points per second.',
+    caption: 'Pick the attribute that holds it.',
   },
 ]} />
 
-The **Scan period** is how far back the first scan reads, for example **Last 30 days**. To pick your own range,
-open the date picker.
+**Scan period** is how far back the first scan reads: **All history**, **Last 180 days**, **Last 90 days**, or
+**Last 30 days**. To pick your own range, click the dates below the buttons.
 
 <ImageGallery images={[
   {
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-period-chips.webp',
+    alt: 'Scan period buttons highlighted with Last 30 days selected',
+    caption: 'Pick a scan period.',
+  },
+  {
     src: '/src/assets/images/trendz/vibration/getting-started-wizard-period-picker.webp',
     alt: 'Scan period date picker open with quick ranges and a two-month calendar',
-    caption: 'Pick your own scan period in the date picker.',
+    caption: 'Or pick your own range.',
   },
 ]} />
 
-Once both are set, click **Next**.
+Click **Next**.
 
 <ImageGallery images={[
   {
     src: '/src/assets/images/trendz/vibration/getting-started-wizard-scan-next.webp',
     alt: 'Scan settings step with points per second 25600 Hz and the scan period Last 30 days set, and the Next button highlighted',
-    caption: 'Settings done: click Next.',
+    caption: 'Click Next.',
   },
 ]} />
 
@@ -219,12 +232,17 @@ Once the details are set, click **Next**.
 If you do not know your bearings, click **Create model** without adding one. You can add bearings later.
 </Aside>
 
-Bearings let Trendz mark their fault frequencies and name the defect. What the fault frequencies are is described
-in <DocLink product={props.product} path='vibration/basics#bearing-faults-and-envelope-analysis'>Vibration Analysis Basics</DocLink>. Add each bearing in one of two ways.
+Bearings let Trendz mark their fault frequencies, BPFO, BPFI, BSF, and FTF, on the spectra and name the defect.
+What the four frequencies mean is explained in
+<DocLink product={props.product} path='vibration/basics#bearing-faults-and-envelope-analysis'>Vibration Analysis Basics</DocLink>.
+The fault frequencies turn into hertz only with a shaft speed, so set it in Step 5.
 
-**Enter it by hand.** Click **Add bearing** and give it a name. Then define it by its **Fault frequencies**, BPFO,
-BPFI, BSF, and FTF as multiples of the shaft speed, or by its **Geometry**: the number of rolling elements, the
-element and pitch diameters, and the contact angle. **Resolved** shows the frequencies in hertz at the shaft speed.
+**Add a bearing.**
+
+1. Click **Add bearing**.
+2. A new row, such as **Bearing 1**, appears in the list and opens on the right. A warning icon stays on it until
+   the bearing is complete: hover it to read **Complete this bearing or remove it**.
+3. Enter the bearing as described below.
 
 <ImageGallery images={[
   {
@@ -233,55 +251,70 @@ element and pitch diameters, and the contact angle. **Resolved** shows the frequ
     caption: 'Click Add bearing.',
   },
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-frequencies.webp',
-    alt: 'Bearing LDK UER204 entered by hand with the fault frequencies BPFO 3.083, BPFI 4.917, BSF 2.067, and FTF 0.385, resolved at 2100 RPM',
-    caption: 'Fault frequencies: enter the four orders.',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-warning.webp',
+    alt: 'New bearing row Bearing 1 highlighted with its warning icon and the tooltip Complete this bearing or remove it',
+    caption: 'The warning stays until the bearing is complete.',
   },
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-geometry.webp',
-    alt: 'Bearing defined by Geometry with the fields rolling elements, element diameter, pitch diameter, and contact angle',
-    caption: 'Geometry: enter the dimensions instead.',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-new.webp',
+    alt: 'New bearing row highlighted in the list, and its Source select set to Manual',
+    caption: 'The new bearing and its source.',
   },
 ]} />
 
-**Read it from an attribute.** Switch **Source** to **From attribute** and pick the attribute that holds the bearing
-as JSON on each machine. The panel shows the bearing it parsed for one machine, so you can check it.
+**Enter the bearing.** It applies to every machine of the model:
+
+1. Type a name, for example **Drive end — SKF 6205**.
+2. Under **Defined by**, choose **Fault frequencies** or **Geometry**, and fill in the fields. Both are described
+   in the table below.
+3. Check **Resolved at … RPM** below the fields: it shows each fault frequency in hertz at the shaft speed.
+
+| Defined by | What you enter |
+|------------|----------------|
+| **Fault frequencies** | **BPFO**, **BPFI**, **BSF**, and **FTF** as orders, multiples of the shaft speed. They are usually in the bearing maker's catalogue |
+| **Geometry** | **Rolling elements**, **Element ⌀** and **Pitch ⌀** in mm, and **Contact angle** in degrees. Trendz calculates the orders from them |
 
 <ImageGallery images={[
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-source.webp',
-    alt: 'Bearing source list open with Manual and From attribute',
-    caption: 'Switch the source to From attribute.',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-name.webp',
+    alt: 'Bearing name field highlighted with Drive end — SKF 6205',
+    caption: '1. Type a name.',
   },
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-attribute.webp',
-    alt: 'Attribute list of the bearing open with bearing, bearingGeometry, bearingType, faultElement, source, and unit',
-    caption: 'Pick the attribute that holds the bearing.',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-mode.webp',
+    alt: 'Defined by highlighted, with the Fault frequencies and Geometry buttons',
+    caption: '2. Choose Fault frequencies or Geometry.',
   },
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-add.webp',
-    alt: 'Bearings step with one bearing read from the attribute bearing, parsed from Conveyor 4A as LDK UER204 with its BPFO, BPFI, BSF, and FTF',
-    caption: 'A bearing read from an attribute, with the fault frequencies it resolves to.',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-frequencies.webp',
+    alt: 'Fault frequencies BPFO 3.585, BPFI 5.415, BSF 2.357, and FTF 0.398 highlighted, with the frequencies resolved at 2100 RPM below',
+    caption: '3. Fault frequencies: enter the four orders.',
+  },
+  {
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-geometry.webp',
+    alt: 'Geometry highlighted: 9 rolling elements, element diameter 7.94 mm, pitch diameter 38.5 mm, contact angle 0, with the frequencies resolved at 2100 RPM below',
+    caption: '4. Geometry: enter the bearing dimensions.',
   },
 ]} />
+
+For more bearing settings, such as reading a different bearing for each machine from an attribute, see
+<DocLink product={props.product} path='vibration/interface/properties-tab#bearings'>Properties Tab</DocLink>.
 
 Once the bearings are set, click **Create model**. Trendz starts the first scan.
 
 <ImageGallery images={[
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-create-attr.webp',
-    alt: 'Bearings step with the bearing LDK UER204 read from the attribute bearing, and the Create model button highlighted',
+    src: '/src/assets/images/trendz/vibration/getting-started-wizard-bearing-create.webp',
+    alt: 'Bearings step with the bearing Drive end — SKF 6205 entered by fault frequencies, and the Create model button highlighted',
     caption: 'Bearings set: click Create model.',
   },
 ]} />
 
 ### Step 7. See the results
 
-The model page opens on the **Overview** tab and fills in machine by machine as the scan runs. Select a machine in
-the table at the bottom: the card at the top left shows its ISO zone, its most likely shaft problem, and its most
-likely bearing problem. The view switch above the chart shows how the machine changed over time. Every part of the
-tab is described in <DocLink product={props.product} path='vibration/interface/overview-tab'>Overview Tab</DocLink>,
-and what each fault looks like in <DocLink product={props.product} path='vibration/basics#fault-signatures'>Vibration Analysis Basics</DocLink>.
+The model opens on the **Overview** tab, and results appear as the scan runs. Select a machine in the table to see
+its health and how it changes over time. The tab is described in
+<DocLink product={props.product} path='vibration/interface/overview-tab'>Overview Tab</DocLink>.
 
 <ImageGallery images={[
   {
@@ -297,9 +330,7 @@ A new model scans once. To scan new samples as they arrive, click **Configure** 
 **Overview** tab:
 
 1. Switch **Scheduled scanning** on and choose how often, for example every 6 hours.
-2. Optionally switch **Save metrics as telemetry** on and check the **Telemetry key**, so the metrics are also
-   saved in ThingsBoard for your dashboards.
-3. Click **Save changes**.
+2. Click **Save changes**.
 
 <ImageGallery images={[
   {
@@ -308,14 +339,14 @@ A new model scans once. To scan new samples as they arrive, click **Configure** 
     caption: 'Click Configure.',
   },
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-monitoring-schedule.webp',
-    alt: 'Monitoring configuration with the Scheduled scanning card highlighted and switched on, running every 6 hours for all items in the profile',
-    caption: 'Scan new samples on a schedule.',
+    src: '/src/assets/images/trendz/vibration/getting-started-monitoring-off.webp',
+    alt: 'Monitoring configuration dialog of the Pumps vibration model with the Scheduled scanning card highlighted and switched off',
+    caption: 'Scheduled scanning is off on a new model.',
   },
   {
-    src: '/src/assets/images/trendz/vibration/getting-started-monitoring-telemetry.webp',
-    alt: 'Monitoring configuration with the Save metrics as telemetry card highlighted and switched on, with the telemetry key Pumps_vibration and the metrics to save',
-    caption: 'Save the metrics to ThingsBoard.',
+    src: '/src/assets/images/trendz/vibration/getting-started-monitoring-schedule.webp',
+    alt: 'Monitoring configuration with Scheduled scanning switched on, running every 6 hours for all items in the profile, and the Save changes button highlighted',
+    caption: 'Switch it on, then click Save changes.',
   },
 ]} />
 
