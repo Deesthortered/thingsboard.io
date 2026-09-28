@@ -420,6 +420,17 @@ Click **Manage targets** under the target card:
 The editor lists the targets on the left and the selected target on the right. A model built without a target is
 completed here: add the target and the next refresh checks the existing prediction against it.
 
+<Aside type="note">
+**Manage targets** reacts to whatever the model is running:
+
+- A **full model rebuild** — for example after you change the prediction method or another setting on the
+  Properties tab — blocks the editor from opening at all.
+- A **single item's refresh or retrain** lets you open the editor, but **Save** stays disabled until that item
+  finishes.
+
+Both are expected; the editor is fully available again once the run completes.
+</Aside>
+
 ### Evaluation window
 
 The evaluation window is the period the total is measured over, and **Aggregation** turns it into one number:

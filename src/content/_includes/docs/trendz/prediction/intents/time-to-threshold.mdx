@@ -350,6 +350,17 @@ Click **Manage rules** under the Next event card:
 The editor lists the rules on the left and the selected rule on the right. A model built without a rule is
 completed here: add the rule and the next refresh checks the existing forecast against it. Nothing is retrained.
 
+<Aside type="note">
+**Manage rules** reacts to whatever the model is running:
+
+- A **full model rebuild** — for example after you change the prediction method or another setting on the
+  Properties tab — blocks the editor from opening at all.
+- A **single item's refresh or retrain** lets you open the editor, but **Save** stays disabled until that item
+  finishes.
+
+Both are expected; the editor is fully available again once the run completes.
+</Aside>
+
 ### Trigger condition
 
 The trigger condition is what the countdown counts down to:
