@@ -401,22 +401,24 @@ Two actions make the time to event available outside the Result tab:
 **Alarm creation** raises a ThingsBoard alarm of the **Alarm type** while an event is predicted. The type must be
 unique within the profile, because ThingsBoard keeps one active alarm per item and type.
 
-**Severity thresholds** set how close the event must be for each severity. As the event gets closer, the alarm
-steps up to the most severe level whose threshold it has reached:
+**Severity thresholds** — you define what counts as each severity: how close the event must be for a **Warning**,
+a **Major**, or a **Critical**. They are off by default, so turn on the ones you need:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-rules-severity.webp',
+    alt: 'Manage rules dialog with Alarm creation highlighted: alarm type Peak load predicted and severity thresholds WARNING 3 days, MINOR off, MAJOR 1 day, CRITICAL 6 hours',
+    caption: 'You set the alarm type and how close the event must be for each severity.',
+  },
+]} />
+
+As the event gets closer, the alarm steps up to the most severe level whose threshold it has reached:
 
 <ImageGallery images={[
   {
     src: '/src/assets/images/trendz/prediction/ttt-severity.svg',
     alt: 'Diagram: a timeline toward the event start with No alarm, then WARNING from 3 days before, MAJOR from 1 day before, and CRITICAL from 6 hours before',
     caption: 'The thresholds of the demo model: WARNING 3 days, MAJOR 1 day, CRITICAL 6 hours.',
-  },
-]} />
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-rules-severity.webp',
-    alt: 'Manage rules dialog with Alarm creation highlighted: alarm type Peak load predicted and severity thresholds WARNING 3 days, MINOR off, MAJOR 1 day, CRITICAL 6 hours',
-    caption: 'Alarm creation with its alarm type and the severity thresholds.',
   },
 ]} />
 

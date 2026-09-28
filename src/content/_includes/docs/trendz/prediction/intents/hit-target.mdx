@@ -491,8 +491,18 @@ A target whose value is zero writes nothing, because its share is undefined.
 **Alarm creation** raises a ThingsBoard alarm of the **Alarm type** while the target is at risk. The type must be
 unique among the rules and targets of the profile.
 
-**Severity thresholds** set a minimum risk for each severity. Risk reads the same way for both kinds of target, and
-higher always means more at risk:
+**Severity thresholds** — you define what counts as each severity: how much risk is a **Warning**, a **Major**, or
+a **Critical**. They are off by default, so turn on the ones you need:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/target-dialog-alarm.webp',
+    alt: 'Manage targets dialog with Alarm creation highlighted: alarm type Monthly energy budget at risk and severity thresholds WARNING 80%, MINOR off, MAJOR 95%, CRITICAL 100%',
+    caption: 'You set the alarm type and the risk at which each severity kicks in.',
+  },
+]} />
+
+Risk reads the same way for both kinds of target, and higher always means more at risk:
 
 - For a limit to stay under, risk is the % of target.
 - For a goal to reach, risk is 100 minus the % of target.
@@ -506,14 +516,6 @@ every enabled threshold:
     src: '/src/assets/images/trendz/prediction/target-risk.svg',
     alt: 'Diagram: a risk scale from 0% to 100% with No alarm below 80%, WARNING from 80%, MAJOR from 95%, and CRITICAL at 100%; site-energy-002 at 98.8% is MAJOR and site-energy-003 at 100% is CRITICAL',
     caption: 'The thresholds of the demo model: WARNING 80%, MAJOR 95%, CRITICAL 100%.',
-  },
-]} />
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/target-dialog-alarm.webp',
-    alt: 'Manage targets dialog with Alarm creation highlighted: alarm type Monthly energy budget at risk and severity thresholds WARNING 80%, MINOR off, MAJOR 95%, CRITICAL 100%',
-    caption: 'Alarm creation with its alarm type and the severity thresholds.',
   },
 ]} />
 
