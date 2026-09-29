@@ -92,7 +92,7 @@ A refresh that finds no new data for an item skips it.
 
 Switch **Scheduled retrain** on. Each refresh then first learns from the newest readings, and only then predicts.
 
-<Aside type="caution" title="Strongly recommended">
+<Aside type="tip" title="Strongly recommended">
 Keep **Scheduled retrain** on for every model you rely on. Without it, the model stays exactly as it was trained:
 it keeps predicting from the patterns it learned on day one, even after the device starts behaving differently.
 </Aside>
@@ -130,7 +130,8 @@ see <DocLink product={props.product} path="prediction/intents/time-to-threshold"
 
 ### Step 5. Turn on Alarm creation
 
-Switch **Alarm creation** on to let the model raise alarms. It is the master switch for every event rule and
+Switch **Alarm creation** on to let the model raise alarms. This switch is shown only for **Time to Threshold** and
+**Hit Target** models, the two intents that raise alarms. It is the master switch for every event rule and
 target of the model: with it off, no alarm is raised, whatever the rules and targets say.
 
 <ImageGallery images={[
@@ -148,18 +149,16 @@ settings.
 
 <ImageGallery images={[
   {
+    src: '/src/assets/images/trendz/prediction/monitoring-s6-save.webp',
+    alt: 'Continuous monitoring configuration with all four switches on and the Save changes button highlighted',
+    caption: 'Click <b>Save changes</b>.',
+  },
+  {
     src: '/src/assets/images/trendz/prediction/monitoring-s6-card.webp',
-    alt: 'Model page with the Continuous monitoring card highlighted: Periodic refresh every 1 hour, Save telemetry enabled, Alarm creation enabled, Scheduled retrain not configured',
+    alt: 'Model page with the Enabled badge and the Continuous monitoring card highlighted: Periodic refresh every 1 hour, Save telemetry enabled, Alarm creation enabled, Scheduled retrain configured',
     caption: 'The card after saving.',
   },
 ]} />
-
-| Card cell | Shows |
-|-----------|-------|
-| **Periodic refresh** | **Disabled**, or **Every N units** |
-| **Save telemetry** | **Enabled** or **Disabled** |
-| **Alarm creation** | **Enabled** or **Disabled** |
-| **Scheduled retrain** | **Configured** or **Not configured** |
 
 ## Alarms
 
@@ -184,64 +183,22 @@ Alarms come from the rules and targets of a model, and each intent sets them up 
   },
 ]} />
 
-<Aside type="caution">
-Whatever a rule or target says, the model's **Alarm creation** switch from Step 5 must be on as well. A rule or
-target with its own alarm switch on raises nothing while the model's switch is off. Trendz offers
-**Open monitoring settings** when it notices the mismatch.
-</Aside>
-
-### Example: site energy
-
-The site energy models refresh every hour, save telemetry, and raise alarms. The Time to Threshold model watches
-peak load above 760 kWh, and the Hit Target model watches the monthly budget of 300,000 kWh. After the refreshes,
-both show their alarms on the Result tab, and the same alarms are in ThingsBoard, one per item and alarm type:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/monitoring-result-ttt.webp',
-    alt: 'Time to Threshold Result tab: site-energy-006 above the 760 threshold now, with a Major alarm, and the Continuous monitoring card with periodic refresh every hour and alarm creation enabled',
-    caption: 'Time to Threshold: site-energy-006 is above 760, with a Major alarm.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/monitoring-result-ht.webp',
-    alt: 'Hit Target Result tab: site-energy-003 off track for the monthly budget, predicted at 122.1% of the target, with the Continuous monitoring card enabled',
-    caption: 'Hit Target: site-energy-003 is heading to 122% of its monthly budget.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/monitoring-tb-alarms.webp',
-    alt: 'ThingsBoard alarms of site-energy-006: Monthly energy budget at risk at Critical and Peak load predicted at Major',
-    caption: 'In ThingsBoard: both alarms on site-energy-006.',
-  },
-]} />
-
-### Alarm lifecycle
-
-ThingsBoard keeps one active alarm per item and alarm type:
-
-- **Raised** when a rule or target reaches one of its severities.
-- **Updated in place** when the severity changes.
-- **Cleared** when no severity is reached any more.
-- **Stays cleared** after an operator clears it, unless the severity gets worse.
-
-Alarms are cleared, never deleted, so ThingsBoard keeps their history. From there they are normal ThingsBoard
-alarms: show them in dashboards, or forward them by email, SMS, or to a ticketing system with a rule chain.
-
 ## Where to go next
 
 <InstallationCardGrid product={props.product} items={[
   {
-    path: 'prediction/intents/time-to-threshold',
-    title: 'Time to Threshold',
-    description: 'Predict when a metric crosses a limit, and set up the event rules that raise alarms.',
-    icon: '/src/assets/images/trendz/prediction/icon-threshold.svg',
+    path: 'prediction/interface',
+    title: 'Interface Overview',
+    description: 'Find your way around the models list, the model page, and its tabs.',
+    icon: '/src/assets/images/trendz/prediction/icon-book.svg',
     accent: '#2A7DEC',
     hero: true,
   },
   {
-    path: 'prediction/intents/hit-target',
-    title: 'Hit Target',
-    description: 'Predict whether a goal is reached by the end of a period, and set up its targets.',
-    icon: '/src/assets/images/trendz/prediction/icon-target.svg',
+    path: 'prediction/models-and-accuracy',
+    title: 'Models & accuracy',
+    description: 'How Trendz picks a model, trains it, and measures how accurate the forecasts are.',
+    icon: '/src/assets/images/trendz/prediction/icon-accuracy.svg',
     accent: '#10b981',
     hero: true,
   },
