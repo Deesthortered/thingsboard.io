@@ -211,7 +211,7 @@ Alarms and telemetry for the rule are switched on afterwards, in [Event rules](#
 
 ### Step 5: Build the model
 
-**Data Readiness** — read the panel before you train:
+**Data Readiness** — check the status before you train. The better it is, the better the resulting forecast:
 
 <ImageGallery images={[
   {
@@ -292,39 +292,9 @@ a row to switch the card and the chart to that item.
 
 ### Item actions
 
-The **⋯** button at the end of each row opens the actions for that one item:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-item-menu.webp',
-    alt: 'Items table of a Time to Threshold model with the three-dot button at the end of the site-energy-006 row highlighted',
-    caption: 'Click <b>⋯</b> at the end of a row to open its actions.',
-  },
-]} />
-
-| Action | What it does | When to use it |
-|--------|--------------|----------------|
-| **Refresh** | Fits the item's model on the readings that arrived since the last refresh, predicts again, and checks the rules | The countdown is out of date and you do not want to wait for the next scheduled refresh |
-| **Retrain** | Trains the item's model again from scratch on the whole training period | The item's behavior has changed, or its training failed |
-| **Delete** | Removes the item, its events, and its forecast from the model. The device or asset in ThingsBoard stays as it is | The item should not be predicted, for example a test device or a closed site |
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-item-refresh.webp',
-    alt: 'Items table with the row menu of site-energy-006 open and Refresh highlighted',
-    caption: '<b>Refresh</b> updates the countdown of one item with its newest readings.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-item-retrain.webp',
-    alt: 'Items table with the row menu of site-energy-006 open and Retrain highlighted',
-    caption: '<b>Retrain</b> trains the item again from its whole training period.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-item-delete.webp',
-    alt: 'Items table with the row menu of site-energy-006 open and Delete highlighted',
-    caption: '<b>Delete</b> takes the item out of the model.',
-  },
-]} />
+The **⋯** button at the end of each item row — **Refresh**, **Retrain**, and **Delete** for one item — works the
+same for every intent. See
+<DocLink product={props.product} path="prediction/interface#item-actions">Interface Overview</DocLink>.
 
 ### Continuous monitoring
 
@@ -344,20 +314,9 @@ raises alarms.
 
 ### Data status
 
-The **Data status** card shows the selected item and how long ago it was last refreshed. Its buttons run the same
-work as the row menu, for more items at once:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-data-status.webp',
-    alt: 'Result tab of a Time to Threshold model with the Data status card highlighted, showing site-energy-006, its last refresh, and the Refresh item, Refresh all, and Retrain all failed buttons',
-    caption: 'Data status of the selected item, with buttons for one item or the whole model.',
-  },
-]} />
-
-- **Refresh item** refreshes the selected item.
-- **Refresh all** refreshes every item of the model.
-- **Retrain all failed** trains again every item whose training failed.
+The **Data status** card and its **Refresh item**, **Refresh all**, and **Retrain all failed** buttons work the
+same for every intent. See
+<DocLink product={props.product} path="prediction/interface#data-status">Interface Overview</DocLink>.
 
 ## Event rules
 
@@ -390,6 +349,17 @@ Click **Manage rules** under the Next event card:
 
 The editor lists the rules on the left and the selected rule on the right. A model built without a rule is
 completed here: add the rule and the next refresh checks the existing forecast against it. Nothing is retrained.
+
+<Aside type="note">
+**Manage rules** reacts to whatever the model is running:
+
+- A **full model rebuild** — for example after you change the prediction method or another setting on the
+  Properties tab — blocks the editor from opening at all.
+- A **single item's refresh or retrain** lets you open the editor, but **Save** stays disabled until that item
+  finishes.
+
+Both are expected; the editor is fully available again once the run completes.
+</Aside>
 
 ### Trigger condition
 
@@ -431,22 +401,24 @@ Two actions make the time to event available outside the Result tab:
 **Alarm creation** raises a ThingsBoard alarm of the **Alarm type** while an event is predicted. The type must be
 unique within the profile, because ThingsBoard keeps one active alarm per item and type.
 
-**Severity thresholds** set how close the event must be for each severity. As the event gets closer, the alarm
-steps up to the most severe level whose threshold it has reached:
+**Severity thresholds** — you define what counts as each severity: how close the event must be for a **Warning**,
+a **Major**, or a **Critical**. They are off by default, so turn on the ones you need:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/ttt-rules-severity.webp',
+    alt: 'Manage rules dialog with Alarm creation highlighted: alarm type Peak load predicted and severity thresholds WARNING 3 days, MINOR off, MAJOR 1 day, CRITICAL 6 hours',
+    caption: 'You set the alarm type and how close the event must be for each severity.',
+  },
+]} />
+
+As the event gets closer, the alarm steps up to the most severe level whose threshold it has reached:
 
 <ImageGallery images={[
   {
     src: '/src/assets/images/trendz/prediction/ttt-severity.svg',
     alt: 'Diagram: a timeline toward the event start with No alarm, then WARNING from 3 days before, MAJOR from 1 day before, and CRITICAL from 6 hours before',
     caption: 'The thresholds of the demo model: WARNING 3 days, MAJOR 1 day, CRITICAL 6 hours.',
-  },
-]} />
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/ttt-rules-severity.webp',
-    alt: 'Manage rules dialog with Alarm creation highlighted: alarm type Peak load predicted and severity thresholds WARNING 3 days, MINOR off, MAJOR 1 day, CRITICAL 6 hours',
-    caption: 'Alarm creation with its alarm type and the severity thresholds.',
   },
 ]} />
 

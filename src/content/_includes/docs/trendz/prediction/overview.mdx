@@ -2,7 +2,7 @@ import ImageGallery from '@components/ImageGallery.astro';
 import RuleNodeCardGrid from '@components/RuleNodeCardGrid.astro';
 import InstallationCardGrid from '@components/InstallationCardGrid.astro';
 
-A **prediction model** in Trendz learns from the telemetry history of a device profile and predicts what comes
+A **prediction model** in Trendz learns from the telemetry history of a device or asset profile and predicts what comes
 next: future values, limit crossings, period totals, or target progress. Predictions return to ThingsBoard as
 telemetry and alarms, with no model code to write.
 
@@ -55,21 +55,12 @@ A model is trained once from the history. After that, every scheduled refresh up
   },
 ]} />
 
-1. **Send readings:** A meter or sensor sends readings to ThingsBoard, for example hourly energy.
-2. **Store them:** ThingsBoard stores the readings as device telemetry.
-3. **Read the history:** When you create or retrain the model, the training task reads the training period of each
-   item.
-4. **Fit and save:** The Python executor, a separate service, learns the patterns of each item and measures the
-   accuracy. Trendz saves the model in its database.
-5. **Start a refresh:** On the schedule set on the model, for example every hour, Trendz starts a refresh task.
-6. **Read new data:** The refresh reads the latest readings of each item.
-7. **Load the model:** Trendz loads the trained model from its database.
-8. **Retrain:** With **Scheduled retrain** on, the model is refitted on the latest data first.
-9. **Predict:** The Python executor forecasts over the horizon, and Trendz stores the forecast.
-10. **Raise alarms:** Event rules and targets raise ThingsBoard alarms, when alarm creation is on.
-11. **Save the forecast:** Trendz writes the forecast back to ThingsBoard as telemetry.
-12. **Act on it:** Dashboards show the forecasts and alarms, and rule chains send them on by email, SMS, or to a
-    ticketing system.
+**The takeaway:** every forecast and alarm comes back into ThingsBoard as ordinary telemetry and alarms. The
+dashboards, rule chains, and notifications you already use pick them up unchanged — a forecast is just another
+telemetry key on the device or asset, and an alarm is just an alarm.
+
+There is no model code to write and no pipeline to run: once it is set up, the model keeps itself current on the
+schedule you choose.
 
 ## Where to start
 

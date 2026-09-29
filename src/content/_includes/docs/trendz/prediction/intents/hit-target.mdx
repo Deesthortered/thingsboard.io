@@ -277,7 +277,7 @@ Alarms and telemetry for the target are switched on afterwards, in [Targets](#ta
 
 ### Step 5: Build the model
 
-**Data Readiness** — read the panel before you train:
+**Data Readiness** — check the status before you train. The better it is, the better the resulting forecast:
 
 <ImageGallery images={[
   {
@@ -363,39 +363,9 @@ card and the chart to that item.
 
 ### Item actions
 
-The **⋯** button at the end of each row opens the actions for that one item:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/target-item-menu.webp',
-    alt: 'Items table of a Hit Target model with the three-dot button at the end of the site-energy-003 row highlighted',
-    caption: 'Click <b>⋯</b> at the end of a row to open its actions.',
-  },
-]} />
-
-| Action | What it does | When to use it |
-|--------|--------------|----------------|
-| **Refresh** | Fits the item's model on the readings that arrived since the last refresh, predicts the rest of the period again, and checks the targets | The prediction is out of date and you do not want to wait for the next scheduled refresh |
-| **Retrain** | Trains the item's model again from scratch on the whole training period | The item's behavior has changed, or its training failed |
-| **Delete** | Removes the item and its prediction from the model. The device or asset in ThingsBoard stays as it is | The item should not be predicted, for example a test device or a closed site |
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/target-item-refresh.webp',
-    alt: 'Items table with the row menu of site-energy-003 open and Refresh highlighted',
-    caption: '<b>Refresh</b> updates the prediction of one item with its newest readings.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/target-item-retrain.webp',
-    alt: 'Items table with the row menu of site-energy-003 open and Retrain highlighted',
-    caption: '<b>Retrain</b> trains the item again from its whole training period.',
-  },
-  {
-    src: '/src/assets/images/trendz/prediction/target-item-delete.webp',
-    alt: 'Items table with the row menu of site-energy-003 open and Delete highlighted',
-    caption: '<b>Delete</b> takes the item out of the model.',
-  },
-]} />
+The **⋯** button at the end of each item row — **Refresh**, **Retrain**, and **Delete** for one item — works the
+same for every intent. See
+<DocLink product={props.product} path="prediction/interface#item-actions">Interface Overview</DocLink>.
 
 ### Continuous monitoring
 
@@ -415,20 +385,9 @@ raises alarms.
 
 ### Data status
 
-The **Data status** card shows the selected item and how long ago it was last refreshed. Its buttons run the same
-work as the row menu, for more items at once:
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/target-data-status.webp',
-    alt: 'Result tab of a Hit Target model with the Data status card highlighted, showing site-energy-003, its last refresh, and the Refresh item, Refresh all, and Retrain all failed buttons',
-    caption: 'Data status of the selected item, with buttons for one item or the whole model.',
-  },
-]} />
-
-- **Refresh item** refreshes the selected item.
-- **Refresh all** refreshes every item of the model.
-- **Retrain all failed** trains again every item whose training failed.
+The **Data status** card and its **Refresh item**, **Refresh all**, and **Retrain all failed** buttons work the
+same for every intent. See
+<DocLink product={props.product} path="prediction/interface#data-status">Interface Overview</DocLink>.
 
 ## Targets
 
@@ -460,6 +419,17 @@ Click **Manage targets** under the target card:
 
 The editor lists the targets on the left and the selected target on the right. A model built without a target is
 completed here: add the target and the next refresh checks the existing prediction against it.
+
+<Aside type="note">
+**Manage targets** reacts to whatever the model is running:
+
+- A **full model rebuild** — for example after you change the prediction method or another setting on the
+  Properties tab — blocks the editor from opening at all.
+- A **single item's refresh or retrain** lets you open the editor, but **Save** stays disabled until that item
+  finishes.
+
+Both are expected; the editor is fully available again once the run completes.
+</Aside>
 
 ### Evaluation window
 
@@ -521,8 +491,18 @@ A target whose value is zero writes nothing, because its share is undefined.
 **Alarm creation** raises a ThingsBoard alarm of the **Alarm type** while the target is at risk. The type must be
 unique among the rules and targets of the profile.
 
-**Severity thresholds** set a minimum risk for each severity. Risk reads the same way for both kinds of target, and
-higher always means more at risk:
+**Severity thresholds** — you define what counts as each severity: how much risk is a **Warning**, a **Major**, or
+a **Critical**. They are off by default, so turn on the ones you need:
+
+<ImageGallery images={[
+  {
+    src: '/src/assets/images/trendz/prediction/target-dialog-alarm.webp',
+    alt: 'Manage targets dialog with Alarm creation highlighted: alarm type Monthly energy budget at risk and severity thresholds WARNING 80%, MINOR off, MAJOR 95%, CRITICAL 100%',
+    caption: 'You set the alarm type and the risk at which each severity kicks in.',
+  },
+]} />
+
+Risk reads the same way for both kinds of target, and higher always means more at risk:
 
 - For a limit to stay under, risk is the % of target.
 - For a goal to reach, risk is 100 minus the % of target.
@@ -536,14 +516,6 @@ every enabled threshold:
     src: '/src/assets/images/trendz/prediction/target-risk.svg',
     alt: 'Diagram: a risk scale from 0% to 100% with No alarm below 80%, WARNING from 80%, MAJOR from 95%, and CRITICAL at 100%; site-energy-002 at 98.8% is MAJOR and site-energy-003 at 100% is CRITICAL',
     caption: 'The thresholds of the demo model: WARNING 80%, MAJOR 95%, CRITICAL 100%.',
-  },
-]} />
-
-<ImageGallery images={[
-  {
-    src: '/src/assets/images/trendz/prediction/target-dialog-alarm.webp',
-    alt: 'Manage targets dialog with Alarm creation highlighted: alarm type Monthly energy budget at risk and severity thresholds WARNING 80%, MINOR off, MAJOR 95%, CRITICAL 100%',
-    caption: 'Alarm creation with its alarm type and the severity thresholds.',
   },
 ]} />
 
