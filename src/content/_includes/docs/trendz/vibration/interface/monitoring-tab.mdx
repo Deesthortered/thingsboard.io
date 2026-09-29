@@ -3,8 +3,8 @@ import DocLink from '@components/DocLink.astro';
 import ImageGallery from '@components/ImageGallery.astro';
 import InstallationCardGrid from '@components/InstallationCardGrid.astro';
 
-The **Monitoring** tab answers whether a machine is getting worse, and since when. The Overview tab grades the
-latest sample; this tab follows each machine over time against its own median and against the alarm rules of the
+The **Monitoring** tab answers whether a machine is getting worse, and since when. The
+<DocLink product={props.product} path='vibration/interface/overview-tab'>Overview tab</DocLink> grades the latest sample; this tab follows each machine over time against its own median and against the alarm rules of the
 model, and lists every alarm the rules have raised.
 
 Open it when an alarm arrives in ThingsBoard, to see which series broke which rule and how long it has been open,
@@ -68,7 +68,8 @@ The card at the top left names the selected machine and its alarm state:
 ]} />
 
 A model with no alarm rules has no alarm state to report. The card (1) and the Alarms card (2) offer
-**+ Add alarm rule** instead, which opens the rule editor.
+**+ Add alarm rule** instead, which opens the
+<DocLink product={props.product} path='vibration/monitoring#step-1-open-the-rule-editor'>rule editor</DocLink>.
 
 <ImageGallery images={[
   {
@@ -121,7 +122,8 @@ series alone, and click it again to go back to all of them.
   },
 ]} />
 
-**Manage alarm rules** under the tiles opens the rule editor. The number beside it is how many rules the model
+**Manage alarm rules** under the tiles opens the
+<DocLink product={props.product} path='vibration/monitoring#step-1-open-the-rule-editor'>rule editor</DocLink>. The number beside it is how many rules the model
 has. Writing rules is described in
 <DocLink product={props.product} path='vibration/monitoring#alarm-rules'>Monitoring & Alarms</DocLink>.
 

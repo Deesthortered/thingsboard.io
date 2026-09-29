@@ -185,10 +185,49 @@ Alarms come from the rules and targets of a model, and each intent sets them up 
 
 ## Where to go next
 
+### Explore intents
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'prediction/intents/forecast',
+    title: 'Forecast',
+    description: 'Predict the next values of a metric, like the energy of the next 7 days.',
+    icon: '/src/assets/images/trendz/prediction/icon-forecast.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/time-to-threshold',
+    title: 'Time to Threshold',
+    description: 'Predict when a metric crosses a limit, and raise an alarm before it happens.',
+    icon: '/src/assets/images/trendz/prediction/icon-threshold.svg',
+    accent: '#7c3aed',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/period-total',
+    title: 'Period Total',
+    description: 'Predict the total, peak, or average of a period, such as the energy of this month.',
+    icon: '/src/assets/images/trendz/prediction/icon-period.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/hit-target',
+    title: 'Hit Target',
+    description: 'Predict whether a goal is reached by the end of a period, and how far off it is.',
+    icon: '/src/assets/images/trendz/prediction/icon-target.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />
+
+### Explore more
+
 <InstallationCardGrid product={props.product} items={[
   {
     path: 'prediction/interface',
-    title: 'Interface Overview',
+    title: 'Explore Interface',
     description: 'Find your way around the models list, the model page, and its tabs.',
     icon: '/src/assets/images/trendz/prediction/icon-book.svg',
     accent: '#2A7DEC',
@@ -197,7 +236,7 @@ Alarms come from the rules and targets of a model, and each intent sets them up 
   {
     path: 'prediction/models-and-accuracy',
     title: 'Models & accuracy',
-    description: 'How Trendz picks a model, trains it, and measures how accurate the forecasts are.',
+    description: 'How a model learns, its settings, and how accurate its forecasts are.',
     icon: '/src/assets/images/trendz/prediction/icon-accuracy.svg',
     accent: '#10b981',
     hero: true,
@@ -205,7 +244,7 @@ Alarms come from the rules and targets of a model, and each intent sets them up 
   {
     path: 'prediction/visualization',
     title: 'Show on dashboards',
-    description: 'Chart forecasts, countdowns, and target progress in Trendz views and ThingsBoard dashboards.',
+    description: 'Chart history and forecast together in Trendz views and ThingsBoard dashboards.',
     icon: '/src/assets/images/trendz/prediction/icon-dashboard.svg',
     accent: '#d97706',
     hero: true,

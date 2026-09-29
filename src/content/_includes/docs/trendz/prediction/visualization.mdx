@@ -1,4 +1,5 @@
 import ImageGallery from '@components/ImageGallery.astro';
+import InstallationCardGrid from '@components/InstallationCardGrid.astro';
 import DocLink from '@components/DocLink.astro';
 import { Aside } from '@astrojs/starlight/components';
 
@@ -169,3 +170,71 @@ forecast chart. See <DocLink product={props.product} path="embed-visuals">Embed 
 | A countdown or target card | Rule or target field, or a latest value widget on `_EPE_<key>` / `_EPT_<key>` |
 | A countdown or target over time | Rule or target field with **Telemetry source** **Platform** |
 | A fleet sorted by risk | The items table on the model page |
+
+## Where to go next
+
+### Explore intents
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'prediction/intents/forecast',
+    title: 'Forecast',
+    description: 'Predict the next values of a metric, like the energy of the next 7 days.',
+    icon: '/src/assets/images/trendz/prediction/icon-forecast.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/time-to-threshold',
+    title: 'Time to Threshold',
+    description: 'Predict when a metric crosses a limit, and raise an alarm before it happens.',
+    icon: '/src/assets/images/trendz/prediction/icon-threshold.svg',
+    accent: '#7c3aed',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/period-total',
+    title: 'Period Total',
+    description: 'Predict the total, peak, or average of a period, such as the energy of this month.',
+    icon: '/src/assets/images/trendz/prediction/icon-period.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'prediction/intents/hit-target',
+    title: 'Hit Target',
+    description: 'Predict whether a goal is reached by the end of a period, and how far off it is.',
+    icon: '/src/assets/images/trendz/prediction/icon-target.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />
+
+### Explore more
+
+<InstallationCardGrid product={props.product} items={[
+  {
+    path: 'prediction/interface',
+    title: 'Explore Interface',
+    description: 'Find your way around the models list, the model page, and its tabs.',
+    icon: '/src/assets/images/trendz/prediction/icon-book.svg',
+    accent: '#2A7DEC',
+    hero: true,
+  },
+  {
+    path: 'prediction/monitoring',
+    title: 'Monitoring & alarms',
+    description: 'Refresh and retrain on a schedule, save forecasts to ThingsBoard, and raise alarms.',
+    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
+    accent: '#10b981',
+    hero: true,
+  },
+  {
+    path: 'prediction/models-and-accuracy',
+    title: 'Models & accuracy',
+    description: 'How a model learns, its settings, and how accurate its forecasts are.',
+    icon: '/src/assets/images/trendz/prediction/icon-accuracy.svg',
+    accent: '#d97706',
+    hero: true,
+  },
+]} />

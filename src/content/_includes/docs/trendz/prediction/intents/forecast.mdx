@@ -238,6 +238,8 @@ Auto lets Trendz pick one per item:
   },
 ]} />
 
+Every setting of this step is described in <DocLink product={props.product} path="prediction/models-and-accuracy#wizard-advanced-settings">Wizard advanced settings</DocLink>.
+
 **Build model** — trains one model per item and opens the Result tab when the run finishes:
 
 <ImageGallery images={[
@@ -325,7 +327,7 @@ same for every intent. See
     title: 'Time to Threshold',
     description: 'Predict when a metric crosses a limit, and raise an alarm before it happens.',
     icon: '/src/assets/images/trendz/prediction/icon-threshold.svg',
-    accent: '#2A7DEC',
+    accent: '#7c3aed',
     hero: true,
   },
   {
@@ -346,22 +348,22 @@ same for every intent. See
   },
 ]} />
 
-### Go further with Forecast
+### Explore more
 
 <InstallationCardGrid product={props.product} items={[
   {
-    path: 'prediction/monitoring#set-up-continuous-monitoring',
-    title: 'Set up monitoring',
-    description: 'Refresh the forecast on a schedule, retrain it on new readings, and save it to ThingsBoard as telemetry.',
-    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
+    path: 'prediction/interface',
+    title: 'Explore Interface',
+    description: 'Find your way around the models list, the model page, and its tabs.',
+    icon: '/src/assets/images/trendz/prediction/icon-book.svg',
     accent: '#2A7DEC',
     hero: true,
   },
   {
-    path: 'prediction/models-and-accuracy#accuracy',
-    title: 'Check accuracy',
-    description: 'See how close past forecasts came to the measured values, and how to improve the score.',
-    icon: '/src/assets/images/trendz/prediction/icon-accuracy.svg',
+    path: 'prediction/monitoring',
+    title: 'Monitoring & alarms',
+    description: 'Refresh and retrain on a schedule, save forecasts to ThingsBoard, and raise alarms.',
+    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
     accent: '#10b981',
     hero: true,
   },

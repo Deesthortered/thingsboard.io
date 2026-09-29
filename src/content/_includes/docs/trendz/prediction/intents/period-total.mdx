@@ -232,6 +232,8 @@ Auto lets Trendz pick one per item:
   },
 ]} />
 
+Every setting of this step is described in <DocLink product={props.product} path="prediction/models-and-accuracy#wizard-advanced-settings">Wizard advanced settings</DocLink>.
+
 **Build model** — trains one model per item and opens the Result tab when the run finishes:
 
 <ImageGallery images={[
@@ -397,7 +399,7 @@ None of them rebuilds the model. Click **Apply changes** and the Result tab foll
   {
     path: 'prediction/intents/forecast',
     title: 'Forecast',
-    description: 'Predict the future values of a metric, hour by hour or day by day.',
+    description: 'Predict the next values of a metric, like the energy of the next 7 days.',
     icon: '/src/assets/images/trendz/prediction/icon-forecast.svg',
     accent: '#2A7DEC',
     hero: true,
@@ -407,7 +409,7 @@ None of them rebuilds the model. Click **Apply changes** and the Result tab foll
     title: 'Time to Threshold',
     description: 'Predict when a metric crosses a limit, and raise an alarm before it happens.',
     icon: '/src/assets/images/trendz/prediction/icon-threshold.svg',
-    accent: '#10b981',
+    accent: '#7c3aed',
     hero: true,
   },
   {
@@ -420,29 +422,29 @@ None of them rebuilds the model. Click **Apply changes** and the Result tab foll
   },
 ]} />
 
-### Go further with Period Total
+### Explore more
 
 <InstallationCardGrid product={props.product} items={[
   {
-    path: 'prediction/monitoring#set-up-continuous-monitoring',
-    title: 'Set up monitoring',
-    description: 'Refresh the period on a schedule, retrain it on new readings, and save it to ThingsBoard as telemetry.',
-    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
+    path: 'prediction/interface',
+    title: 'Explore Interface',
+    description: 'Find your way around the models list, the model page, and its tabs.',
+    icon: '/src/assets/images/trendz/prediction/icon-book.svg',
     accent: '#2A7DEC',
     hero: true,
   },
   {
-    path: 'prediction/models-and-accuracy#accuracy',
-    title: 'Check accuracy',
-    description: 'See how close past predictions came to the measured values, and how to improve the score.',
-    icon: '/src/assets/images/trendz/prediction/icon-accuracy.svg',
+    path: 'prediction/monitoring',
+    title: 'Monitoring & alarms',
+    description: 'Refresh and retrain on a schedule, save forecasts to ThingsBoard, and raise alarms.',
+    icon: '/src/assets/images/trendz/prediction/icon-clock.svg',
     accent: '#10b981',
     hero: true,
   },
   {
     path: 'prediction/visualization',
     title: 'Show on dashboards',
-    description: 'Chart the period and its forecast in Trendz views and ThingsBoard dashboards.',
+    description: 'Chart history and forecast together in Trendz views and ThingsBoard dashboards.',
     icon: '/src/assets/images/trendz/prediction/icon-dashboard.svg',
     accent: '#d97706',
     hero: true,

@@ -30,8 +30,9 @@ what happens next:
 Monitoring is off on a new model. Turn on **Scheduled scanning**, and the model rescans its machines by itself.
 
 <Steps>
-1. Open the model and click **Configure** on the Monitoring card. It sits on the Overview and the Monitoring
-   tab.
+1. Open the model and click **Configure** on the Monitoring card. It sits on the
+   <DocLink product={props.product} path='vibration/interface/overview-tab#monitoring-card'>Overview</DocLink> and the
+   <DocLink product={props.product} path='vibration/interface/monitoring-tab#monitoring-card'>Monitoring</DocLink> tab.
 
    <ImageGallery images={[
      {
@@ -485,8 +486,9 @@ Ames Research Center, Moffett Field, CA.
 
 On the **Monitoring** tab of the model you can follow the alarms your rules raise and manage the alarm rules:
 
-- **Alarms:** the card on the right lists the open alarms of the selected machine, with their rule, severity, and
-  when they opened. The items table below shows the alarms of every machine.
+- **Alarms:** the <DocLink product={props.product} path='vibration/interface/monitoring-tab#alarms-card'>Alarms card</DocLink> on the right lists the open alarms of the selected machine, with
+  their rule, severity, and when they opened. The <DocLink product={props.product} path='vibration/interface/monitoring-tab#items-table'>items table</DocLink> below
+  shows the alarms of every machine.
 - **Manage alarm rules:** the button opens the [rule editor](#step-1-open-the-rule-editor), with the number of
   rules the model has.
 
@@ -503,8 +505,9 @@ Read more about the tab in
 
 ## Vibration View Field
 
-Each vibration model adds a field, named after the model, to its profile's business entity. Use it to chart
-vibration in Trendz views next to the machine's other data. With monitoring on, every scan adds new values to it.
+Each vibration model adds a field, named after the model, to its profile's
+<DocLink product={props.product} path='concepts/business-entities'>business entity</DocLink>. Use it to chart vibration in
+<DocLink product={props.product} path='visualizations-overview'>Trendz views</DocLink> next to the machine's other data. With monitoring on, every scan adds new values to it.
 
 <ImageGallery images={[
   {
@@ -515,7 +518,7 @@ vibration in Trendz views next to the machine's other data. With monitoring on, 
 ]} />
 
 To chart it, drag the field onto the **Y axis** of a view, with **Date** on the X axis and the device on
-**Series**. Use a line chart rather than a bar chart: each machine becomes one line over time, so a rising
+**Series**. Use a <DocLink product={props.product} path='visualizations-line'>line chart</DocLink> rather than a bar chart: each machine becomes one line over time, so a rising
 trend is easy to see.
 
 <ImageGallery images={[
@@ -542,5 +545,5 @@ Click the field on the axis to change what it reads:
   },
 ]} />
 
-A view built this way can be filtered, grouped, and compared like any other, and embedded in a ThingsBoard
-dashboard with the Trendz widget.
+A view built this way can be <DocLink product={props.product} path='concepts/data-filtering'>filtered</DocLink>, <DocLink product={props.product} path='concepts/group-by-category'>grouped</DocLink>, and compared like any other, and
+<DocLink product={props.product} path='embed-visuals'>embedded in a ThingsBoard dashboard</DocLink> with the Trendz widget.

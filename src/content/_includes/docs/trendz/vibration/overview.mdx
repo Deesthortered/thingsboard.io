@@ -67,12 +67,14 @@ A vibration model connects the sensors to the alarms. Once it is set up, every s
 1. **Send a sample:** The sensor records a 3-second waveform, for example once a day, and sends it to ThingsBoard.
    The format is described in <DocLink product={props.product} path='vibration/getting-started'>Getting started</DocLink>.
 2. **Store it:** ThingsBoard stores the waveform as device telemetry.
-3. **Start a scan:** On the schedule set on the model, for example every 6 hours, Trendz starts a scan task.
+3. **Start a scan:** On the <DocLink product={props.product} path='vibration/monitoring#set-up-continuous-monitoring'>schedule set on the model</DocLink>, for example every 6 hours, Trendz starts a
+   <DocLink product={props.product} path='vibration/interface/workspace#tasks-tab'>scan task</DocLink>.
 4. **Read new samples:** The scan reads the newest sample of each device.
 5. **Analyze:** Trendz computes the spectra, the metrics, the ISO zone, and the fault scores of each sample.
 6. **Save to the database:** Trendz stores the spectra and results in its own database, for the
    <DocLink product={props.product} path='vibration/interface/analyzer-tab'>Analyzer</DocLink>.
-7. **Save metrics:** Trendz writes RMS, peak-to-peak, and other metrics back to ThingsBoard as telemetry.
+7. **Save metrics:** Trendz writes RMS, peak-to-peak, and other metrics back to ThingsBoard as
+   <DocLink product={props.product} path='vibration/monitoring#save-metrics-as-telemetry'>telemetry</DocLink>.
 8. **Raise alarms:** Trendz checks every alarm rule on the new sample. A breached rule raises an alarm, which
    ThingsBoard stores. See <DocLink product={props.product} path='vibration/monitoring'>Monitoring and alarms</DocLink>.
 9. **Act on it:** Dashboards show the metrics and alarms, and rule chains send them on by email, SMS, or to a
