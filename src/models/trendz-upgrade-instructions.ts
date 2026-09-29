@@ -36,6 +36,8 @@ export interface TrendzUpgradeVersion {
 	windowsZipOverride?: string;
 	/** Warn the user about Java 17 migration before upgrading */
 	java17Warning?: boolean;
+	/** Warn the user about Java 25 migration before upgrading */
+	java25Warning?: boolean;
 	/** Show a note about running the widget bundle update after upgrading */
 	widgetBundleNote?: boolean;
 	/** Warn the user about Python Executor migration before upgrading */
@@ -72,7 +74,7 @@ export function getTrendzUpgradeStepVersions(family?: string): TrendzUpgradeVers
 export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 	{
 		version: '1.16.0',
-		displayVersion: '1.16',
+		displayVersion: '1.16.0',
 		family: '1.16',
 		releaseDate: 'Sep 30 2026',
 		lts: true,
@@ -80,6 +82,7 @@ export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 		anchor: 'v1-16-0',
 		// 1.16.x uses the new upgrade mechanism — no --fromVersion flag needed
 		haproxyNote: false,
+		java25Warning: true,
 	},
 	{
 		version: '1.15.2.1',
@@ -129,7 +132,7 @@ export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 	},
 	{
 		version: '1.14.0',
-		displayVersion: '1.14',
+		displayVersion: '1.14.0',
 		family: '1.14',
 		releaseDate: 'Nov 6 2025',
 		lts: false,
@@ -163,7 +166,7 @@ export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 	},
 	{
 		version: '1.13.0',
-		displayVersion: '1.13',
+		displayVersion: '1.13.0',
 		family: '1.13',
 		releaseDate: 'Mar 10 2025',
 		lts: false,
@@ -174,7 +177,7 @@ export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 	},
 	{
 		version: '1.12.0',
-		displayVersion: '1.12',
+		displayVersion: '1.12.0',
 		family: '1.12',
 		releaseDate: 'Dec 31 2024',
 		lts: false,
@@ -205,7 +208,7 @@ export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 	},
 	{
 		version: '1.11.0',
-		displayVersion: '1.11',
+		displayVersion: '1.11.0',
 		family: '1.11',
 		releaseDate: 'Apr 2 2024',
 		lts: false,
@@ -256,7 +259,7 @@ export const TRENDZ_UPGRADE_VERSIONS: TrendzUpgradeVersion[] = [
 	},
 	{
 		version: '1.10.0',
-		displayVersion: '1.10',
+		displayVersion: '1.10.0',
 		family: '1.10',
 		releaseDate: 'Feb 27 2023',
 		lts: false,

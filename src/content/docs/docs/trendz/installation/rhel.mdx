@@ -41,26 +41,26 @@ sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.
 
 ## Installation steps
 
-### Step 1. Install Java 17 (OpenJDK)
+### Step 1. Install Java 25 (OpenJDK)
 
 <Tabs>
 <TabItem label="RHEL/CentOS 8, 9">
 
 ```bash
-sudo dnf install java-17-openjdk-headless
+sudo dnf install java-25-openjdk-headless
 ```
 
 </TabItem>
 <TabItem label="CentOS 7">
 
 ```bash
-sudo yum install java-17-openjdk-headless
+sudo yum install java-25-openjdk-headless
 ```
 
 </TabItem>
 </Tabs>
 
-Set Java 17 as the default version:
+Set Java 25 as the default version:
 
 ```bash
 sudo update-alternatives --config java
@@ -75,7 +75,7 @@ java -version
 Expected output:
 
 ```text
-openjdk version "17.x.xx"
+openjdk version "25.x.x"
 OpenJDK Runtime Environment (...)
 OpenJDK 64-Bit Server VM (build ...)
 ```

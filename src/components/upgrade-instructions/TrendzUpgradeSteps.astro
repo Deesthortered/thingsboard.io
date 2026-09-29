@@ -32,10 +32,15 @@ const syncLink =
 					? '/docs/trendz/installation/kubernetes/#sync-trendz-with-thingsboard'
 					: '/docs/trendz/installation/docker/#sync-trendz-with-thingsboard';
 
-const java17Link =
+const java17InstallCmd =
 	platform === 'centos'
-		? '/docs/trendz/installation/rhel/#step-1-install-java-17-openjdk'
-		: '/docs/trendz/installation/ubuntu/#step-1-install-java-17-openjdk';
+		? 'sudo dnf install java-17-openjdk-headless'
+		: 'sudo apt update && sudo apt install openjdk-17-jdk-headless';
+
+const java25InstallCmd =
+	platform === 'centos'
+		? 'sudo dnf install java-25-openjdk-headless'
+		: 'sudo apt update && sudo apt install openjdk-25-jdk-headless';
 ---
 
 {(platform === 'ubuntu' || platform === 'centos') && (
@@ -122,7 +127,24 @@ const java17Link =
 				<aside class="starlight-aside starlight-aside--caution">
 					<p class="starlight-aside__title" aria-hidden="true">Java 17 required</p>
 					<div class="starlight-aside__content">
-						<p>Trendz Analytics {v.displayVersion} requires <strong>Java 17</strong>. Before upgrading, update your Java installation to Java 17. Refer to the <a href={java17Link}>Java 17 installation instructions</a> for details.</p>
+						<p>Trendz Analytics {v.displayVersion} requires <strong>Java 17</strong>. Before upgrading, install Java 17:</p>
+						<Code code={java17InstallCmd} lang="bash" />
+						<p>Set Java 17 as the default version:</p>
+						<Code code="sudo update-alternatives --config java" lang="bash" />
+						<p>Check that <code>java -version</code> prints version 17.</p>
+					</div>
+				</aside>
+			)}
+
+			{v.java25Warning && (platform === 'ubuntu' || platform === 'centos') && (
+				<aside class="starlight-aside starlight-aside--caution">
+					<p class="starlight-aside__title" aria-hidden="true">Java 25 required</p>
+					<div class="starlight-aside__content">
+						<p>Starting from Trendz Analytics {v.displayVersion}, Trendz requires <strong>Java 25</strong>. Before upgrading, install Java 25:</p>
+						<Code code={java25InstallCmd} lang="bash" />
+						<p>Set Java 25 as the default version:</p>
+						<Code code="sudo update-alternatives --config java" lang="bash" />
+						<p>Check that <code>java -version</code> prints version 25.</p>
 					</div>
 				</aside>
 			)}
