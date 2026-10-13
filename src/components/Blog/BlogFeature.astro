@@ -2,6 +2,7 @@
 /**
  * BlogFeature — one feature in a `BlogGrid`: a heading, a sentence or two of Markdown and a visual
  * below it; `wide` spans the row. The h3 is rendered here, not in Markdown, to keep it out of the TOC.
+ * Keep the text to one paragraph: the feature is three subgrid rows (title, text, panel).
  */
 interface Props {
 	title: string;
@@ -19,10 +20,12 @@ const { title, wide = false } = Astro.props;
 <style lang="scss">
 	@use './blog-kit' as kit;
 
+	/* title, text and panel share the row's tracks, so side-by-side panels start at the same height */
 	.feature {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
+		display: grid;
+		grid-row: span 3;
+		grid-template-rows: subgrid;
+		row-gap: 6px;
 	}
 
 	.wide {
@@ -39,7 +42,6 @@ const { title, wide = false } = Astro.props;
 	}
 
 	.feature > :global(.blog-panel) {
-		flex: 1;
 		margin-top: 10px;
 	}
 </style>
