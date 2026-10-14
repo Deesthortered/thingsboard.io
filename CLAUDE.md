@@ -29,11 +29,12 @@ pnpm lint:steps       # Catch <Steps> lists inside JSX {…} blocks (Markdown no
 pnpm lint:redirects   # Detect redirect chains in the redirect data
 pnpm lint:dualrender  # Validate IoT Hub server/client card render parity (needs a build)
 pnpm lint:landmarks   # One <main> per page + marketing table integrity (needs a build)
-pnpm format           # Format with Prettier (format:code / format:imports / format:ci are the parts)
+pnpm format           # Format with Prettier
 
 # Generators
 pnpm generate:redirects   # Regenerate public/_redirects + public/redirects.json (see Redirects)
 pnpm generate:nav-sprite  # Rebuild the mega-menu icon sprite after editing an icon (builds run it automatically)
+pnpm update:stars         # Refresh GitHub star counts in src/data/github-stars.json (a weekday workflow does this and opens a PR)
 pnpm optimize:svg         # Minify SVGs in place with SVGO (src/assets + public, or the paths given); safe to re-run
 ```
 
@@ -137,7 +138,7 @@ src/content/docs/docs/
   ├── mobile/            ← Mobile pages
   ├── license-server/    ← License Server pages
   ├── iot-hub/           ← IoT Hub docs (user and contribution guides)
-  └── private-cloud/     ← Private Cloud pages
+  └── private-cloud/     ← Private Cloud subscription page (standalone; no product prefix, resolves as CE)
 ```
 
 TBMQ (`mqtt-broker/`) has a prefix in the enum but no content directory yet.
