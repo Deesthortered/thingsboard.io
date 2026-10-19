@@ -70,6 +70,8 @@ const javaGuideLink =
 		<p>Select the correct kube-config context before running any commands:</p>
 		<Code code="kubectl config get-contexts" lang="bash" />
 		<Code code="kubectl config use-context <your-config-name>" lang="bash" />
+		<h3>Backup database</h3>
+		<p>Make a backup of the <code>trendz</code> database before upgrading, with <code>pg_dump</code> or the backup tools of your PostgreSQL provider.</p>
 	</section>
 )}
 
@@ -93,6 +95,42 @@ const javaGuideLink =
 		: '';
 	const k8sLogOutput =
 		'Upgrading Trendz from version …\n…\nCurrent version is …, upgrade is not needed\n…\nStarted TrendzApplication in …';
+	// Versions without fromVersion upgrade through a one-off Job: the image reads the current version from the
+	// database, and the Deployment itself never runs the upgrade
+	const k8sUpgradeJob = `apiVersion: batch/v1
+kind: Job
+metadata:
+  name: trendz-upgrade
+  namespace: trendz
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: trendz-upgrade
+          image: thingsboard/trendz:${v.version}
+          env:
+            - name: UPGRADE_TRENDZ
+              value: "true"
+          envFrom:
+            - configMapRef:
+                name: trendz-app-db-config
+          volumeMounts:
+            - name: trendz-app-config
+              mountPath: /trendz-config-files
+      volumes:
+        - name: trendz-app-config
+          configMap:
+            name: trendz-app-config
+            items:
+              - key: trendz.conf
+                path: trendz.conf
+              - key: logback.xml
+                path: logback.xml`;
+	const k8sConfigKeysCmd = `kubectl get configmap trendz-app-config -n trendz -o go-template='{{range $k, $v := .data}}{{$k}}{{"\\n"}}{{end}}'`;
+	const k8sJobLogOutput =
+		'Start upgrading Trendz from version …\n…\nCurrent version is …, upgrade is not needed.';
 
 	return (
 		<section>
@@ -278,12 +316,12 @@ const javaGuideLink =
 						</div>
 					</aside>
 
-					<h3>Reduce pods count</h3>
-					<p>The deployment must have exactly one running pod for the upgrade to succeed:</p>
-					<Code code="kubectl scale deployment trendz-app-deployment --replicas=1" lang="bash" />
-
-					{v.fromVersion && (
+					{v.fromVersion ? (
 						<>
+							<h3>Reduce pods count</h3>
+							<p>The deployment must have exactly one running pod for the upgrade to succeed:</p>
+							<Code code="kubectl scale deployment trendz-app-deployment --replicas=1" lang="bash" />
+
 							<h3>Create upgrade flag file</h3>
 							<p>Get the current pod name:</p>
 							<Code code="kubectl get pods -l app=trendz-app-pod-label" lang="bash" />
@@ -295,26 +333,70 @@ const javaGuideLink =
 									<p>Set the value to the version you are <strong>currently running</strong>, not the version you are upgrading to. You can upgrade directly from <strong>any earlier version</strong>.</p>
 								</div>
 							</aside>
+
+							<h3>Update image version</h3>
+							<p>Open <code>trendz-app-deployment.yml</code> and update the <code>image</code> field to <strong>thingsboard/trendz:{v.version}</strong>:</p>
+							<Code code="nano trendz-app-deployment.yml" lang="bash" />
+
+							<h3>Apply the deployment</h3>
+							<p>Apply the updated configuration and wait until the pod is ready:</p>
+							<Code code="kubectl apply -f trendz-app-deployment.yml" lang="bash" />
+
+							<h3>Verify the upgrade</h3>
+							<p>Stream the pod logs to confirm the upgrade ran successfully:</p>
+							<Code code="kubectl logs -f <trendz-pod-name>" lang="bash" />
+							<p>Look for the following lines:</p>
+							<Code code={k8sLogOutput} lang="text" />
+
+							<h3>Restore pods count</h3>
+							<p>After the upgrade is complete, restore your preferred replica count:</p>
+							<Code code="kubectl scale deployment trendz-app-deployment --replicas=<pod-count>" lang="bash" />
+						</>
+					) : (
+						<>
+							<h3>Update image versions</h3>
+							<p>Update the <code>image</code> field to <strong>thingsboard/trendz:{v.version}</strong> in <code>trendz-app-deployment.yml</code> and to <strong>thingsboard/trendz-python-executor:{v.version}</strong> in <code>trendz-python-executor-deployment.yml</code>. Do not apply the files yet.</p>
+
+							<h3>Stop Trendz</h3>
+							<p>Scale the deployment down to zero and wait until its pods are gone, so that no running instance uses the database during the upgrade:</p>
+							<Code code={`kubectl scale deployment trendz-app-deployment -n trendz --replicas=0\nkubectl wait --for=delete pod -l app=trendz-app-pod-label -n trendz --timeout=120s`} lang="bash" />
+
+							<h3>Run the upgrade job</h3>
+							<p>Create <code>trendz-upgrade.yml</code> with the following content. The job reads the current version from the database, so you do not need to specify which version you are upgrading from:</p>
+							<Code code={k8sUpgradeJob} lang="yaml" title="trendz-upgrade.yml" meta="download='trendz-upgrade.yml'" />
+							<p>The job must read the configuration files under the same ConfigMap keys as your deployment. List the keys of <code>trendz-app-config</code>:</p>
+							<Code code={k8sConfigKeysCmd} lang="bash" />
+							<aside class="starlight-aside starlight-aside--caution">
+								<p class="starlight-aside__title" aria-hidden="true">Installed before Trendz 1.15</p>
+								<div class="starlight-aside__content">
+									<p>Installations created from the Trendz Kubernetes scripts before version 1.15 use the keys <code>conf</code> and <code>logback</code>. If the command prints them, change <code>key: trendz.conf</code> to <code>key: conf</code> and <code>key: logback.xml</code> to <code>key: logback</code> in <code>trendz-upgrade.yml</code>, keeping the <code>path</code> values. Otherwise the job pod stays in <code>ContainerCreating</code> with the error <code>configmap references non-existent config key</code>.</p>
+								</div>
+							</aside>
+							<p>If your installation uses different ConfigMap names or a different namespace, adjust them to match <code>trendz-app-deployment.yml</code>. Then start the job and wait for it to finish:</p>
+							<Code code={`kubectl apply -f trendz-upgrade.yml\nkubectl wait --for=condition=complete job/trendz-upgrade -n trendz --timeout=900s`} lang="bash" />
+
+							<h3>Verify the upgrade</h3>
+							<p>Check the job logs:</p>
+							<Code code="kubectl logs job/trendz-upgrade -n trendz" lang="bash" />
+							<p>Look for the following lines:</p>
+							<Code code={k8sJobLogOutput} lang="text" />
+							<p>The log starts with Trendz installation messages ending in <code>The database schema is already installed, skip installation...</code>. This is expected: the job checks the installation before it runs the upgrade.</p>
+							<aside class="starlight-aside starlight-aside--caution">
+								<p class="starlight-aside__title" aria-hidden="true">If the job fails</p>
+								<div class="starlight-aside__content">
+									<p>Do not start Trendz. Find the cause in the job logs and restore the database from the backup if needed.</p>
+								</div>
+							</aside>
+							<p>Once the upgrade has succeeded, delete the job. A finished job cannot be updated, so the next upgrade needs a fresh one:</p>
+							<Code code="kubectl delete job trendz-upgrade -n trendz" lang="bash" />
+
+							<h3>Start Trendz</h3>
+							<p>Apply the updated deployments:</p>
+							<Code code={`kubectl apply -f trendz-python-executor-deployment.yml\nkubectl apply -f trendz-app-deployment.yml`} lang="bash" />
+							<p>If you run more than one Trendz pod, restore your replica count:</p>
+							<Code code="kubectl scale deployment trendz-app-deployment -n trendz --replicas=<pod-count>" lang="bash" />
 						</>
 					)}
-
-					<h3>Update image version</h3>
-					<p>Open <code>trendz-app-deployment.yml</code> and update the <code>image</code> field to <strong>thingsboard/trendz:{v.version}</strong>:</p>
-					<Code code="nano trendz-app-deployment.yml" lang="bash" />
-
-					<h3>Apply the deployment</h3>
-					<p>Apply the updated configuration and wait until the pod is ready:</p>
-					<Code code="kubectl apply -f trendz-app-deployment.yml" lang="bash" />
-
-					<h3>Verify the upgrade</h3>
-					<p>Stream the pod logs to confirm the upgrade ran successfully:</p>
-					<Code code="kubectl logs -f <trendz-pod-name>" lang="bash" />
-					<p>Look for the following lines:</p>
-					<Code code={k8sLogOutput} lang="text" />
-
-					<h3>Restore pods count</h3>
-					<p>After the upgrade is complete, restore your preferred replica count:</p>
-					<Code code="kubectl scale deployment trendz-app-deployment --replicas=<pod-count>" lang="bash" />
 				</>
 			)}
 
